@@ -89,7 +89,7 @@ class Player {
     if (this.moving) {
       this.renderShadow(ctx, camera, 6, 2);
     } else {
-      this.renderShadow(ctx, camera, 4, 2);
+      this.renderShadow(ctx, camera, 5, 2);
     }
 
     if (dir === 'down') {
