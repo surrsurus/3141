@@ -1,12 +1,12 @@
 class Player {
-  
+
   constructor() {
     var playerImageMoving = new Image();
     playerImageMoving.src = './assets/player/player2-spritesheet.png';
-  
+
     var playerImageIdle = new Image();
     playerImageIdle.src = './assets/player/player2-idle.png';
-  
+
     this.debug = global.DEBUG;
     this.loaded = false;
     this.speed = 2;
@@ -89,11 +89,11 @@ class Player {
   }
 
   render(ctx, camera) {
-    var dir = this.moving ? this.direction[0] : this.idleDirection;
+    let dir = this.moving ? this.direction[0] : this.idleDirection;
     ctx.save();
-  
+
     ctx.translate(camera.offsetX, camera.offsetY);
-  
+
     if (this.debug) {
       let box = this.getBB();
       ctx.strokeStyle = 'red';
@@ -128,13 +128,13 @@ class Player {
       return;
     }
     ctx.restore();
-  
+
     this.tickCount++;
-  
+
     if (this.tickCount < 5) {
       return;
     }
-  
+
     this.tickCount = 0;
     this.frame++;
     if (this.frame >= this.frames[dir].length) {
@@ -147,21 +147,27 @@ class Player {
     let speed = this.speed * this.sprint;
     let origY = this.y;
     let origX = this.x;
+
+    // Remove 2 to return to cartesian movement
     this.direction.forEach(dir => {
       if (dir === 'up') {
-        this.y -= speed;
+        this.y -= speed/2;
+        this.x += speed;
       }
       if (dir === 'down') {
-        this.y += speed;
+        this.y += speed/2;
+        this.x -= speed;
       }
       if (dir === 'left') {
+        this.y -= speed/2;
         this.x -= speed;
       }
       if (dir === 'right') {
+        this.y += speed/2;
         this.x += speed;
       }
     });
-  
+
     // Chec to see if we bumped into anything! if we did, reset the position
     if (environment.isOutOfBounds(this.getBB())) {
       this.x = origX;
@@ -180,7 +186,7 @@ class Player {
   }
 
   addSprint() {
-    this.sprint = 1.5;
+    this.sprint = 2;
   }
 
   removeSprint() {

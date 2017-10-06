@@ -8,17 +8,25 @@ const keyboard = require('./keyboard');
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
+// The factor by which the canvas size is increased
+const magnification = 2;
+
 class Game {
 
   constructor() {
 
     ctx.imageSmoothingEnabled = false;
-    
+
     canvas.width = 480;
     canvas.height = 270;
-    
-    canvas.style.width = '960px';
-    canvas.style.height = '540px';
+
+    canvas.style.width = canvas.width * magnification + 'px';
+    canvas.style.height = canvas.height * magnification + 'px';
+
+    // canvas.style.width = '960px';
+    // canvas.style.height = '540px';
+
+    [player.x, player.y] = environment.findStart();
 
     this.camera = new Camera(canvas, 0, 0);
 
@@ -35,10 +43,10 @@ class Game {
   render() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+
     environment.render(ctx, this.camera);
     player.render(ctx, this.camera);
-  
+
     environment.renderForeground(ctx, this.camera);
 
   }
