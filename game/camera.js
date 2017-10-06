@@ -1,17 +1,18 @@
 const S = require('./settings');
 
 /**
- * @desc Basic camera class that is always centered on the player
+ * @desc Basic camera class that updates to always be centered on the player
+ * @class
  */
 class Camera {
 	
 	/**
 	 * @desc Constructor for Camera object
+	 * @constructor
 	 * 
 	 * @param {Object} canvas 
 	 * @param {Number} startX 
 	 * @param {Number} startY 
-	 * @constructor
 	 */
 	constructor(canvas, startX, startY) {
 		this.offsetX = startX - canvas.width / S.cameraOffset;
@@ -22,6 +23,7 @@ class Camera {
 
 	/**
 	 * @desc Update function gets called every tick and by defaults always centers around the player
+	 * @function
 	 * 
 	 * @param {Object} ctx 
 	 * @param {Object} player 

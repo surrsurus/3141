@@ -1,6 +1,7 @@
 
 /**
  * @desc Translate cartesian coordinates to isometric coordinates
+ * @function
  * 
  * @param {Number} x 
  * @param {Number} y 
@@ -16,6 +17,7 @@ const cart2Iso = (x, y) => {
 
 /**
  * @desc Translate isometric coordinates to cartesian coordinates
+ * @function
  * 
  * @param {Number} x 
  * @param {Number} y 

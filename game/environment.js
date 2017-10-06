@@ -1,22 +1,31 @@
-const Dungeon = require('./dungeonGenerator.js');
+/**
+ * Handles the map and it's generation
+ */
+
+const Dungeon = require('./dungeon/generator.js');
 const U = require('./utils.js');
-const PF = require('pathfinding');
+const S = require('./settings');
 const turf = require('turf');
 const overlaps = require('turf-overlaps');
 const _ = require('underscore');
 
+/**
+ * @desc Evironment class handles generating a map, giving it boundaries, and detecting when objects collide with the walls
+ * @class
+ */
 class Environment {
 
+  /**
+   * @desc Constructor for Environment
+   * @constructor
+   */
   constructor() {
-    this.numTilesX = 41;
-    this.numTilesY = 41;
+
+    // Generate a dungeon
     this.dungeon = new Dungeon().generate({
-      width: this.numTilesX,
-      height: this.numTilesY
+      width: S.mapWidth,
+      height: S.mapHeight
     });
-  
-    this.tileWidth = 80;
-    this.tileHeight = 40;
   
     this.x = 0;
     this.y = 0;
@@ -59,11 +68,7 @@ class Environment {
     }
   
     this.fineMatrix = fineMatrix;
-  
-    this.pathFinder = new PF.AStarFinder({
-      allowDiagonal: true,
-      dontCrossCorners: true
-    });
+
   }
 
   setBounds() {
@@ -100,16 +105,16 @@ class Environment {
   }
 
   pushBounds(x, y) {
-    let cartX = x * this.tileWidth / 2;
-    let cartY = y * this.tileHeight;
+    let cartX = x * S.tileWidth / 2;
+    let cartY = y * S.tileHeight;
     let isoX = cartX - cartY;
     let isoY = (cartX + cartY) / 2;
 
     this.bounds.push({
       top: isoY,
       left: isoX,
-      right: isoX + this.tileWidth,
-      bottom: isoY + this.tileHeight
+      right: isoX + S.tileWidth,
+      bottom: isoY + S.tileHeight
     });
   }
 
@@ -124,10 +129,10 @@ class Environment {
       for (let y = 0; y < this.dungeon.tiles.length; y++) {
         if (this.dungeon.tiles[x][y].type !== 'wall') {
           console.log(x, y);
-          // startX = x * this.tileWidth / 2 + this.tileWidth / 2;
-          // startY = y * this.tileHeight + this.tileHeight / 2;
-          startX = x * this.tileWidth / 2;
-          startY = y * this.tileHeight;
+          // startX = x * S.tileWidth / 2 + S.tileWidth / 2;
+          // startY = y * S.tileHeight + S.tileHeight / 2;
+          startX = x * S.tileWidth / 2;
+          startY = y * S.tileHeight;
           done = true;
           break;
         }
@@ -172,8 +177,8 @@ class Environment {
   }
 
   drawTile(x, y, ctx, fillStyle = '#dddddd') {
-    let cartX = x * this.tileWidth / 2;
-    let cartY = y * this.tileHeight;
+    let cartX = x * S.tileWidth / 2;
+    let cartY = y * S.tileHeight;
     let isoX = cartX - cartY;
     let isoY = (cartX + cartY) / 2;
   
@@ -181,11 +186,11 @@ class Environment {
   
     ctx.beginPath();
     ctx.moveTo(isoX, isoY);
-    ctx.lineTo(isoX + this.tileWidth / 2, isoY + this.tileHeight / 2);
-    ctx.lineTo(isoX + this.tileWidth / 2, isoY + this.tileHeight / 2 + 20);
-    ctx.lineTo(isoX, isoY + this.tileHeight + 20);
-    ctx.lineTo(isoX - this.tileWidth / 2, isoY + this.tileHeight / 2 + 20);
-    ctx.lineTo(isoX - this.tileWidth / 2, isoY + this.tileHeight / 2);
+    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2);
+    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2 + 20);
+    ctx.lineTo(isoX, isoY + S.tileHeight + 20);
+    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2 + 20);
+    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2);
     ctx.lineTo(isoX, isoY);
     ctx.fill();
   
@@ -193,9 +198,9 @@ class Environment {
   
     ctx.beginPath();
     ctx.moveTo(isoX, isoY);
-    ctx.lineTo(isoX + this.tileWidth / 2, isoY + this.tileHeight / 2);
-    ctx.lineTo(isoX, isoY + this.tileHeight);
-    ctx.lineTo(isoX - this.tileWidth / 2, isoY + this.tileHeight / 2);
+    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2);
+    ctx.lineTo(isoX, isoY + S.tileHeight);
+    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2);
     ctx.lineTo(isoX, isoY);
     ctx.fill();
   }
@@ -259,46 +264,6 @@ class Environment {
   
     let overlapping = overlaps(poly1, poly2);
     return overlapping;
-  }
-
-  findPath(start, end) {
-    let [endX, endY] = end;
-    let [cartEndX, cartEndY] = U.iso2Cart(endX, endY);
-  
-    let gridEndX = Math.floor(cartEndX / this.tileWidth * 2 * 5);
-    let gridEndY = Math.floor(cartEndY / this.tileHeight * 5);
-  
-    // If the destination isn't walkable don't go any further.
-    if (this.fineMatrix[gridEndY][gridEndX] === 1) {
-      return [];
-    }
-  
-    let [startX, startY] = start;
-    let [cartStartX, cartStartY] = U.iso2Cart(startX, startY);
-  
-    let gridStartX = Math.floor(cartStartX / this.tileWidth * 2 * 5);
-    let gridStartY = Math.floor(cartStartY / this.tileHeight * 5);
-  
-    let gridMatrix = new PF.Grid(this.fineMatrix);
-  
-    let path = this.pathFinder.findPath(gridStartX, gridStartY, gridEndX, gridEndY, gridMatrix);
-  
-    path = PF.Util.smoothenPath(gridMatrix, path);
-  
-    // The first path waypoint can be discarded as it's the players current
-    // location.
-    path.splice(0, 1);
-  
-    // Convert the path back to iso coordinates
-    return path.map(coords => {
-      let [x, y] = coords;
-  
-      let cartX = x * this.tileWidth / 2 / 5;
-      let cartY = y * this.tileHeight / 5;
-      let isoX = cartX - cartY;
-      let isoY = (cartX + cartY) / 2;
-      return [isoX, isoY];
-    });
   }
   
 }
