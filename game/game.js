@@ -64,6 +64,13 @@ class Game {
    */
   update(dt) {
 
+    if (global.regen) {
+      global.regen = false;
+      environment.genDungeon();
+      [player.x, player.y] = environment.findStart();
+      this.camera = new Camera(canvas, 0, 0);
+    }
+
     environment.update(dt);
     this.camera.update(ctx, player);
     player.update(environment);

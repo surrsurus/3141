@@ -35,6 +35,14 @@ keyboard.bind('d', function(e) {
 }, function(e) {
     player.removeDirection('right');
 });
+
+keyboard.bind('e', function(e) {
+    global.debug = !global.debug;
+});
+
+keyboard.bind('r', function(e) {
+    global.regen = !global.regen;
+});
   
 keyboard.bind('shift', function(e) {
     player.addSprint();

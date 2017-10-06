@@ -21,12 +21,27 @@ class Environment {
    */
   constructor() {
 
+    this.dungeon;
+    
+    this.x;
+    this.y;
+    this.bounds = [];
+  
+    this.matrix = [];
+    this.fineMatrix;
+
+    this.genDungeon();
+
+  }
+
+  genDungeon() {
+
     // Generate a dungeon
     this.dungeon = new Dungeon().generate({
       width: S.mapWidth,
       height: S.mapHeight
     });
-  
+
     this.x = 0;
     this.y = 0;
     this.bounds = [];
@@ -161,7 +176,7 @@ class Environment {
   
         }
         if (this.dungeon.tiles[i][j].type === 'door') {
-          this.drawTile(i, j, ctx, '#ddddff');
+          this.drawTile(i, j, ctx, '#ffaaaa', '#ff0000');
         }
       }
     }
@@ -176,13 +191,13 @@ class Environment {
     ctx.restore();
   }
 
-  drawTile(x, y, ctx, fillStyle = '#dddddd') {
+  drawTile(x, y, ctx, top = '#dddddd', side = '#eeeeee') {
     let cartX = x * S.tileWidth / 2;
     let cartY = y * S.tileHeight;
     let isoX = cartX - cartY;
     let isoY = (cartX + cartY) / 2;
   
-    ctx.fillStyle = '#eeeeee';
+    ctx.fillStyle = side;
   
     ctx.beginPath();
     ctx.moveTo(isoX, isoY);
@@ -194,7 +209,7 @@ class Environment {
     ctx.lineTo(isoX, isoY);
     ctx.fill();
   
-    ctx.fillStyle = fillStyle;
+    ctx.fillStyle = top;
   
     ctx.beginPath();
     ctx.moveTo(isoX, isoY);
