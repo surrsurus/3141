@@ -178,10 +178,10 @@ class Player {
   // Returns bounding box, this is the players 'footprint';
   getBB() {
     return {
-      top: this.y + this.height - 7,
-      right: this.x + this.width - 6,
+      top: this.y + this.height - 5,
+      right: this.x + this.width - 10,
       bottom: this.y + this.height,
-      left: this.x + 6,
+      left: this.x + 10,
     };
   }
 

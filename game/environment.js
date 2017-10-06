@@ -6,10 +6,10 @@ const overlaps = require('turf-overlaps');
 const _ = require('underscore');
 
 const intersectRect = function intersectRect(r1, r2) {
-  return !(r2.left > r1.right ||
-           r2.right < r1.left ||
-           r2.top > r1.bottom ||
-           r2.bottom < r1.top);
+  return (r2.left < r1.right ||
+           r2.right > r1.left ||
+           r2.top < r1.bottom ||
+           r2.bottom > r1.top);
 };
 
 class Environment {
@@ -123,7 +123,7 @@ class Environment {
   update() {}
 
   render(ctx, camera) {
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   
     ctx.save();
@@ -139,7 +139,7 @@ class Environment {
   
         }
         if (this.dungeon.tiles[i][j].type === 'door') {
-          this.drawTile(i, j, ctx, 'yellow');
+          this.drawTile(i, j, ctx, '#ddddff');
         }
       }
     }
@@ -154,13 +154,13 @@ class Environment {
     ctx.restore();
   }
 
-  drawTile(x, y, ctx, fillStyle = '#888888') {
+  drawTile(x, y, ctx, fillStyle = '#dddddd') {
     let cartX = x * this.tileWidth / 2;
     let cartY = y * this.tileHeight;
     let isoX = cartX - cartY;
     let isoY = (cartX + cartY) / 2;
   
-    ctx.fillStyle = '#555555';
+    ctx.fillStyle = '#eeeeee';
   
     ctx.beginPath();
     ctx.moveTo(isoX, isoY);
@@ -205,6 +205,7 @@ class Environment {
     for (var i = 0; i < this.bounds.length; i++) {
       if (this.intersectIsometric(boundingBox, this.bounds[i])) {
         oob = true;
+        console.log('REEEEEEEEEEEEEEEEE');
         break;
       }
     }
@@ -285,8 +286,5 @@ class Environment {
   }
   
 }
-
-module.exports = new Environment();
-
 
 module.exports = new Environment();
