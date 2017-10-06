@@ -90,6 +90,28 @@ class Player {
 
   render(ctx, camera) {
     let dir = this.moving ? this.direction[0] : this.idleDirection;
+
+    if (dir === 'down') {
+      dir = 'left';
+    }
+
+    // Change facing dir depending if multiple dirs are active
+    if (this.direction.includes('up') && this.direction.includes('right')) {
+      dir = 'right';
+    }
+
+    if (this.direction.includes('up') && this.direction.includes('left')) {
+      dir = 'up';
+    }
+
+    if (this.direction.includes('down') && this.direction.includes('left')) {
+      dir = 'left';
+    }
+
+    if (this.direction.includes('down') && this.direction.includes('right')) {
+      dir = 'down';
+    }
+
     ctx.save();
 
     ctx.translate(camera.offsetX, camera.offsetY);
