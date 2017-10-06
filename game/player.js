@@ -93,6 +93,8 @@ class Player {
 
     if (dir === 'down') {
       dir = 'left';
+    } else if (dir === 'up') {
+      dir = 'right'
     }
 
     // Change facing dir depending if multiple dirs are active
@@ -110,6 +112,11 @@ class Player {
 
     if (this.direction.includes('down') && this.direction.includes('right')) {
       dir = 'down';
+    }
+
+    if (this.direction.includes('up') && this.direction.includes('down') ||
+        this.direction.includes('left') && this.direction.includes('right')) {
+      this.moving = false;
     }
 
     ctx.save();
@@ -169,6 +176,23 @@ class Player {
     let speed = this.speed * this.sprint;
     let origY = this.y;
     let origX = this.x;
+
+    // Change facing dir depending if multiple dirs are active
+    if (this.direction.includes('up') && this.direction.includes('right')) {
+      speed /= 2;
+    }
+
+    if (this.direction.includes('up') && this.direction.includes('left')) {
+      speed /= 1;
+    }
+
+    if (this.direction.includes('down') && this.direction.includes('left')) {
+      speed /= 2;
+    }
+
+    if (this.direction.includes('down') && this.direction.includes('right')) {
+      speed /= 1;
+    }
 
     // Remove 2 to return to cartesian movement
     this.direction.forEach(dir => {
