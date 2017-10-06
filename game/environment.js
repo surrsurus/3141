@@ -76,24 +76,42 @@ class Environment {
 
   setBounds() {
     this.bounds = [];
-  
-    for (var i = 0; i < this.dungeon.tiles.length; i++) {
-      for (var j = 0; j < this.dungeon.tiles.length; j++) {
-        if (this.dungeon.tiles[i][j].type === 'wall') {
-          let cartX = i * this.tileWidth / 2;
-          let cartY = j * this.tileHeight;
-          let isoX = cartX - cartY;
-          let isoY = (cartX + cartY) / 2;
-  
-          this.bounds.push({
-            top: isoY,
-            left: isoX,
-            right: isoX + this.tileWidth,
-            bottom: isoY + this.tileHeight
-          });
+    
+    // Purposefully trigger exceptions by accessing oob elements
+    for (var x = -1; x < this.dungeon.tiles.length + 1; x++) {
+
+      for (var y = -1; y < this.dungeon.tiles.length + 1; y++) {
+
+        try {
+          if (this.dungeon.tiles[x][y].type === 'wall') {
+            this.pushBounds(x, y);
+          }
         }
+        // Since index errors are bound to happen, we know that if an index error occurs,
+        // the tile we're looking at doesn't exist on the map, therefore we can draw a boundary around it
+        // to prevent player from leaving the map if a floor tile spawns on the edge
+        catch (e) {
+          this.pushBounds(x, y);
+        }
+
       }
+
     }
+
+  }
+
+  pushBounds(x, y) {
+    let cartX = x * this.tileWidth / 2;
+    let cartY = y * this.tileHeight;
+    let isoX = cartX - cartY;
+    let isoY = (cartX + cartY) / 2;
+
+    this.bounds.push({
+      top: isoY,
+      left: isoX,
+      right: isoX + this.tileWidth,
+      bottom: isoY + this.tileHeight
+    });
   }
 
   findStart() {
@@ -205,7 +223,6 @@ class Environment {
     for (var i = 0; i < this.bounds.length; i++) {
       if (this.intersectIsometric(boundingBox, this.bounds[i])) {
         oob = true;
-        console.log('REEEEEEEEEEEEEEEEE');
         break;
       }
     }
