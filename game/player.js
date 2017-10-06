@@ -86,6 +86,12 @@ class Player {
   render(ctx, camera) {
     let dir = this.moving ? this.direction[0] : this.idleDirection;
 
+    if (this.moving) {
+      this.renderShadow(ctx, camera, 6, 2);
+    } else {
+      this.renderShadow(ctx, camera, 4, 2);
+    }
+
     if (dir === 'down') {
       dir = 'left';
     } else if (dir === 'up') {
@@ -165,6 +171,20 @@ class Player {
       this.frame = 0;
     }
 
+  }
+
+  renderShadow(ctx, camera, x, y) {
+    ctx.save();
+    ctx.translate(camera.offsetX, camera.offsetY);
+    ctx.beginPath();
+    ctx.ellipse(this.x+16, this.y+30, x, y, Math.PI/180, 0, 2 * Math.PI);
+    ctx.restore();
+    ctx.fillStyle = '#222222';
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#333333';
+    ctx.stroke();
+    ctx.restore();
   }
 
   update(environment) {

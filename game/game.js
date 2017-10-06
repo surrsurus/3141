@@ -51,7 +51,6 @@ class Game {
     
     environment.render(ctx, this.camera);
     player.render(ctx, this.camera);
-    
     environment.renderForeground(ctx, this.camera);
     
   }
