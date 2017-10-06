@@ -1,18 +1,13 @@
+const S = require('./settings');
+
 class Player {
 
   constructor() {
-    var playerImageMoving = new Image();
-    playerImageMoving.src = './assets/player/player2-spritesheet.png';
-
-    var playerImageIdle = new Image();
-    playerImageIdle.src = './assets/player/player2-idle.png';
-
-    this.debug = global.DEBUG;
     this.loaded = false;
     this.speed = 2;
     this.sprint = 1;
-    this.imgMoving = playerImageMoving;
-    this.imgIdle = playerImageIdle;
+    this.imgMoving = S.playerImageMoving;
+    this.imgIdle = S.playerImageIdle;
     this.width = 32;
     this.height = 32;
     this.frame = 0;
@@ -123,7 +118,7 @@ class Player {
 
     ctx.translate(camera.offsetX, camera.offsetY);
 
-    if (this.debug) {
+    if (global.debug) {
       let box = this.getBB();
       ctx.strokeStyle = 'red';
       ctx.strokeRect(box.left, box.top, box.right - box.left, box.bottom - box.top);

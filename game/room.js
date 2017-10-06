@@ -43,8 +43,8 @@ class Room {
       if (!other.getBoundingBox) {
         throw new Error('Given entity has no method getBoundingBox');
       }
-      var r1 = this.getBoundingBox();
-      var r2 = other.getBoundingBox();
+      let r1 = this.getBoundingBox();
+      let r2 = other.getBoundingBox();
   
       return !(r2.left > r1.right ||
               r2.right < r1.left ||

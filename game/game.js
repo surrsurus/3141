@@ -1,15 +1,11 @@
-global.DEBUG = true;
-
 const player = require('./player');
 const Camera = require('./camera');
 const environment = require('./environment');
 const keyboard = require('./keyboard');
+const S = require('./settings');
 
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
-
-// The factor by which the canvas size is increased
-const magnification = 2;
 
 class Game {
 
@@ -20,11 +16,9 @@ class Game {
     canvas.width = 480;
     canvas.height = 270;
 
-    canvas.style.width = canvas.width * magnification + 'px';
-    canvas.style.height = canvas.height * magnification + 'px';
-
-    // canvas.style.width = '960px';
-    // canvas.style.height = '540px';
+    // Magnify the canvas
+    canvas.style.width = canvas.width * S.canvasMagnification + 'px';
+    canvas.style.height = canvas.height * S.canvasMagnification + 'px';
 
     [player.x, player.y] = environment.findStart();
 
@@ -56,17 +50,18 @@ class Game {
 // The main game loop
 
 const game = new Game();
-
-var lastTime;
+let lastTime;
 const main = () => {
-  var now = Date.now();
-  var dt = (now - lastTime) / 1000.0;
+
+  let now = Date.now();
+  let dt = (now - lastTime) / 1000.0;
 
   game.update(dt);
   game.render();
 
   lastTime = now;
   requestAnimationFrame(main);
+
 };
 
 main();

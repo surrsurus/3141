@@ -3,7 +3,7 @@
  * http://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
  */
 
-var _ = require('underscore');
+let _ = require('underscore');
 
 const Room = require('./room');
 const Tile = require('./tile');
@@ -37,24 +37,24 @@ const Tile = require('./tile');
  * @constructor
  */
 const Dungeon = function Dungeon() {
-  var numRoomTries = 50;
+  let numRoomTries = 50;
 
   // The inverse chance of adding a connector between two regions that have
   // already been joined. Increasing this leads to more loosely connected
   // dungeons.
-  var extraConnectorChance = 50;
+  let extraConnectorChance = 50;
 
   // Increasing this allows rooms to be larger.
-  var roomExtraSize = 0;
+  let roomExtraSize = 0;
 
-  var windingPercent = 0;
+  let windingPercent = 0;
 
-  var _rooms = [];
+  let _rooms = [];
 
   // The index of the current region being carved.
-  var _currentRegion = -1;
+  let _currentRegion = -1;
 
-  var stage;
+  let stage;
 
   const bindStage = (givenStage) => {
     stage = givenStage;
@@ -105,8 +105,8 @@ const Dungeon = function Dungeon() {
   const fill = (type) => {
     let neighbours = [];
     let nesw = {};
-    var x;
-    var y;
+    let x;
+    let y;
 
     for (x = 0; x < stage.width; x++) {
       _tiles.push([]);
@@ -176,8 +176,8 @@ const Dungeon = function Dungeon() {
     _addRooms();
 
     // Fill in all of the empty space with mazes.
-    for (var y = 0; y < stage.height; y++) {
-      for (var x = 0; x < stage.width; x++) {
+    for (let y = 0; y < stage.height; y++) {
+      for (let x = 0; x < stage.width; x++) {
         // Skip the maze generation if the tile is already carved
         if (getTile(x, y).type === 'floor') {
           continue;
@@ -211,8 +211,8 @@ const Dungeon = function Dungeon() {
    * @returns {void}
    */
   const _growMaze = (startX, startY) => {
-    var cells = [];
-    var lastDir;
+    let cells = [];
+    let lastDir;
 
     if (_tiles[startX][startY].neighbours.filter(x => x.type === 'floor').length > 0) {
       return;
@@ -224,12 +224,12 @@ const Dungeon = function Dungeon() {
     let count = 0;
     while (cells.length && count < 500) {
       count++;
-      var cell = cells[cells.length - 1];
-      var x = cell.x;
-      var y = cell.y;
+      let cell = cells[cells.length - 1];
+      let x = cell.x;
+      let y = cell.y;
 
       // See which adjacent cells are open.
-      var unmadeCells = [];
+      let unmadeCells = [];
 
       if (
         _canCarve(x, y - 1) &&
@@ -275,7 +275,7 @@ const Dungeon = function Dungeon() {
       if (unmadeCells.length) {
         // Based on how "windy" passages are, try to prefer carving in the
         // same direction.
-        var dir;
+        let dir;
         if (unmadeCells.indexOf(lastDir) > -1 && _.random(1, 100) > windingPercent) {
           dir = lastDir;
         } else {
@@ -303,34 +303,34 @@ const Dungeon = function Dungeon() {
    * @desc Creates rooms in the dungeon by repeatedly creating random rooms and
    * seeing if they overlap. Rooms that overlap are discarded. This process is
    * repeated until it hits the maximum tries determined by the 'numRoomTries'
-   * variable.
+   * letiable.
    *
    * @returns {void}
    */
   const _addRooms = () => {
-    for (var i = 0; i < numRoomTries; i++) {
+    for (let i = 0; i < numRoomTries; i++) {
       // Pick a random room size. The funny math here does two things:
       // - It makes sure rooms are odd-sized to line up with maze.
       // - It avoids creating rooms that are too rectangular: too tall and
       //   narrow or too wide and flat.
-      var size = _.random(1, 3 + roomExtraSize) * 2 + 1;
-      var rectangularity = _.random(0, 1 + Math.floor(size / 2)) * 2;
-      var width = size;
-      var height = size;
+      let size = _.random(1, 3 + roomExtraSize) * 2 + 1;
+      let rectangularity = _.random(0, 1 + Math.floor(size / 2)) * 2;
+      let width = size;
+      let height = size;
       if (_oneIn(2)) {
         width += rectangularity;
       } else {
         height += rectangularity;
       }
 
-      var x = _.random(0, Math.floor((stage.width - width) / 2)) * 2 + 1;
-      var y = _.random(0, Math.floor((stage.height - height) / 2)) * 2 + 1;
+      let x = _.random(0, Math.floor((stage.width - width) / 2)) * 2 + 1;
+      let y = _.random(0, Math.floor((stage.height - height) / 2)) * 2 + 1;
 
-      var room = new Room(x, y, width, height);
+      let room = new Room(x, y, width, height);
 
-      var overlaps = false;
+      let overlaps = false;
 
-      for (var other of _rooms) {
+      for (let other of _rooms) {
         if (room.intersects(other)) {
           overlaps = true;
           break;
@@ -361,8 +361,8 @@ const Dungeon = function Dungeon() {
    * @returns {void}
    */
   const carveArea = (x, y, width, height) => {
-    for (var i = x; i < x + width; i++) {
-      for (var j = y; j < y + height; j++) {
+    for (let i = x; i < x + width; i++) {
+      for (let j = y; j < y + height; j++) {
         _carve(i, j);
       }
     }
@@ -433,7 +433,7 @@ const Dungeon = function Dungeon() {
    * @returns {void}
    */
   const _removeDeadEnds = () => {
-    var done = false;
+    let done = false;
 
     const cycle = () => {
       let done = true;

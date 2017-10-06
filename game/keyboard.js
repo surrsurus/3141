@@ -1,9 +1,16 @@
+/**
+ * Handle keyboard input for the player using keyboardjs
+ * Keyboardjs makes handling multiple keypresses at one time work well
+ */
+
 const keyboard = require('keyboardjs');
 const player = require('./player');
 
-document.addEventListener('keydown', function(e) {
-      console.log(e);
-});
+if (global.debug) {
+    document.addEventListener('keydown', function(e) {
+        console.log(e);
+  });
+}
 
 keyboard.bind('a', function(e) {
     player.addDirection('left');

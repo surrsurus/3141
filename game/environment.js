@@ -5,13 +5,6 @@ const turf = require('turf');
 const overlaps = require('turf-overlaps');
 const _ = require('underscore');
 
-const intersectRect = function intersectRect(r1, r2) {
-  return (r2.left < r1.right ||
-           r2.right > r1.left ||
-           r2.top < r1.bottom ||
-           r2.bottom > r1.top);
-};
-
 class Environment {
 
   constructor() {
@@ -25,7 +18,6 @@ class Environment {
     this.tileWidth = 80;
     this.tileHeight = 40;
   
-    this.debug = global.DEBUG;
     this.x = 0;
     this.y = 0;
     this.bounds = [];
@@ -34,10 +26,10 @@ class Environment {
   
     this.matrix = [];
   
-    for (var y = 0; y < this.dungeon.tiles[0].length; y++) {
+    for (let y = 0; y < this.dungeon.tiles[0].length; y++) {
       this.matrix.push([]);
   
-      for (var x = 0; x < this.dungeon.tiles.length; x++) {
+      for (let x = 0; x < this.dungeon.tiles.length; x++) {
         this.matrix[y].push(this.dungeon.tiles[x][y].type === 'wall' ? 1 : 0);
       }
     }
@@ -48,10 +40,10 @@ class Environment {
     let yLen = mat.length * 5;
     let xLen = mat[0].length * 5;
     let range = _.range(1, this.dungeon.tiles.length * 5);
-    for (y = 0; y < yLen; y += 5) {
+    for (let y = 0; y < yLen; y += 5) {
       fineMatrix[y] = range.slice();
   
-      for (x = 0; x < xLen; x += 5) {
+      for (let x = 0; x < xLen; x += 5) {
         let bit = this.matrix[y / 5][x / 5];
         fineMatrix[y][x] = bit;
         fineMatrix[y][x + 1] = bit;
@@ -78,9 +70,9 @@ class Environment {
     this.bounds = [];
     
     // Purposefully trigger exceptions by accessing oob elements
-    for (var x = -1; x < this.dungeon.tiles.length + 1; x++) {
+    for (let x = -1; x < this.dungeon.tiles.length + 1; x++) {
 
-      for (var y = -1; y < this.dungeon.tiles.length + 1; y++) {
+      for (let y = -1; y < this.dungeon.tiles.length + 1; y++) {
 
         try {
           if (this.dungeon.tiles[x][y].type === 'wall') {
@@ -100,6 +92,13 @@ class Environment {
 
   }
 
+  intersectRect(r1, r2) {
+    return (r2.left < r1.right ||
+             r2.right > r1.left ||
+             r2.top < r1.bottom ||
+             r2.bottom > r1.top);
+  }
+
   pushBounds(x, y) {
     let cartX = x * this.tileWidth / 2;
     let cartY = y * this.tileHeight;
@@ -115,14 +114,14 @@ class Environment {
   }
 
   findStart() {
-    var startX;
-    var startY;
-    var done = false;
-    for (var x = 0; x < this.dungeon.tiles.length; x++) {
+    let startX;
+    let startY;
+    let done = false;
+    for (let x = 0; x < this.dungeon.tiles.length; x++) {
       if (done) {
         break;
       }
-      for (var y = 0; y < this.dungeon.tiles.length; y++) {
+      for (let y = 0; y < this.dungeon.tiles.length; y++) {
         if (this.dungeon.tiles[x][y].type !== 'wall') {
           console.log(x, y);
           // startX = x * this.tileWidth / 2 + this.tileWidth / 2;
@@ -150,8 +149,8 @@ class Environment {
   
     ctx.fillStyle = 'red';
   
-    for (var i = 0; i < this.dungeon.tiles.length; i++) {
-      for (var j = 0; j < this.dungeon.tiles.length; j++) {
+    for (let i = 0; i < this.dungeon.tiles.length; i++) {
+      for (let j = 0; j < this.dungeon.tiles.length; j++) {
         if (this.dungeon.tiles[i][j].type === 'floor') {
           this.drawTile(i, j, ctx);
   
@@ -162,7 +161,7 @@ class Environment {
       }
     }
   
-    if (this.debug) {
+    if (global.debug) {
       ctx.strokeStyle = 'red';
       this.bounds.forEach((box) => {
         this.outlineBounds(box.left, box.top, box.right - box.left, box.bottom - box.top, ctx);
@@ -220,7 +219,7 @@ class Environment {
 
   isOutOfBounds(boundingBox) {
     let oob = false;
-    for (var i = 0; i < this.bounds.length; i++) {
+    for (let i = 0; i < this.bounds.length; i++) {
       if (this.intersectIsometric(boundingBox, this.bounds[i])) {
         oob = true;
         break;
@@ -232,7 +231,7 @@ class Environment {
 
   intersectIsometric(r1, r2) {
     // Check outer bounding box first
-    if (!intersectRect(r1, r2)) {
+    if (!this.intersectRect(r1, r2)) {
       return false;
     }
   
@@ -242,7 +241,7 @@ class Environment {
     let r2w = r2.right - r2.left;
     let r2h = r2.bottom - r2.top;
   
-    var poly1 = turf.polygon([[
+    let poly1 = turf.polygon([[
       [r1.left, r1.top],
       [r1.left + r1w / 2, r1.top + r1h / 2],
       [r1.left, r1.top + r1h],
@@ -250,7 +249,7 @@ class Environment {
       [r1.left, r1.top]
     ]]);
   
-    var poly2 = turf.polygon([[
+    let poly2 = turf.polygon([[
       [r2.left, r2.top],
       [r2.left + r2w / 2, r2.top + r2h / 2],
       [r2.left, r2.top + r2h],
@@ -258,7 +257,7 @@ class Environment {
       [r2.left, r2.top]
     ]]);
   
-    var overlapping = overlaps(poly1, poly2);
+    let overlapping = overlaps(poly1, poly2);
     return overlapping;
   }
 
