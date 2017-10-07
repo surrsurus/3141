@@ -160,7 +160,11 @@ class Environment {
   update() {}
 
   render(ctx, camera) {
-    ctx.fillStyle = 'black';
+
+    let grd=ctx.createLinearGradient(0, 0, 0, ctx.canvas.height + 1000);
+    grd.addColorStop(0,"black");
+    grd.addColorStop(1,"#FFBF00");
+    ctx.fillStyle=grd;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   
     ctx.save();
@@ -191,7 +195,22 @@ class Environment {
     ctx.restore();
   }
 
-  drawTile(x, y, ctx, top = '#dddddd', side = '#eeeeee') {
+  sideFade(x, y, h, ctx, side) {
+    for (let i = 0; i < h; i++) {
+      ctx.fillStyle = 'rgb(' + side - (17 * i) +', ' + side - (17 * i) + ', ' + side - (17 * i)+ ')';
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + S.tileWidth / 2, y + S.tileHeight / 2);
+      ctx.lineTo(x + S.tileWidth / 2, y + S.tileHeight / 2 + 30);
+      ctx.lineTo(x, y + S.tileHeight + 30);
+      ctx.lineTo(x - S.tileWidth / 2, y + S.tileHeight / 2 + 30);
+      ctx.lineTo(x - S.tileWidth / 2, y + S.tileHeight / 2);
+      ctx.lineTo(x, y);
+      ctx.fill();
+    }
+  }
+
+  drawTile(x, y, ctx, top = '#eeeeee', side = '#dddddd') {
     let cartX = x * S.tileWidth / 2;
     let cartY = y * S.tileHeight;
     let isoX = cartX - cartY;
@@ -202,13 +221,13 @@ class Environment {
     ctx.beginPath();
     ctx.moveTo(isoX, isoY);
     ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2);
-    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2 + 20);
-    ctx.lineTo(isoX, isoY + S.tileHeight + 20);
-    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2 + 20);
+    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2 + 10);
+    ctx.lineTo(isoX, isoY + S.tileHeight + 10);
+    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2 + 10);
     ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2);
     ctx.lineTo(isoX, isoY);
     ctx.fill();
-  
+
     ctx.fillStyle = top;
   
     ctx.beginPath();

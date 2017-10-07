@@ -212,8 +212,8 @@ const main = ( () => {
   // Save last time
   let lastTime;
 
-  // Title screen
-  currentScreen = new TitleScreen();
+  // Starting screen
+  currentScreen = new GameScreen();
 
   /**
    * @desc This function represents a tick with respect to the game. 
