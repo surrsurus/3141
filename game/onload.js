@@ -4,6 +4,9 @@
 
 window.onload = function() {
 
+  // Start game
+  global.startGame = false;
+
   // Set debug mode
   global.debug = false;
 

@@ -24,25 +24,18 @@ const ctx = canvas.getContext('2d');
 class Game {
 
   /**
-   * @desc Initialize the canvas, player positon, and camera
+   * @desc Initialize the canvas, player positon, and camera.
+   * Assumes canvas is already initialized
    * @constructor
    */
   constructor() {
-
-    // Get that pixelated look
-    ctx.imageSmoothingEnabled = false;
-
-    // Initialize the canvas
-    canvas.width = S.canvasWidth;
-    canvas.height = S.canvasHeight;
-    canvas.style.width = canvas.width * S.canvasMagnification + 'px';
-    canvas.style.height = canvas.height * S.canvasMagnification + 'px';
 
     // Place the player
     [player.x, player.y] = environment.findStart();
 
     // Initialize the camera
     this.camera = new Camera(canvas, 0, 0);
+    this.camera.update(ctx, player);
 
   }
 
@@ -87,17 +80,50 @@ class Game {
 
 }
 
+class TitleScreen {
+  constructor() {
+    this.title = new Image();
+    this.title.src = "./assets/ui/title.png";
+  }
+
+  render() {
+    ctx.drawImage(this.title, 0, 0);
+  }
+
+  update() {
+    if (global.startGame) {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.save();
+      global.currScreen = new Game();
+    }
+  }
+
+}
+
  /**
    * @desc Main function that makes the game object render and update animations in a loop
    * @main
    */
 const main = (function(){
 
-  // Create game object
-  const game = new Game();
+  /**
+   * Initialize canvas
+   */
+  // Get that pixelated look
+  ctx.imageSmoothingEnabled = false;
+  
+  // Initialize the canvas
+  canvas.width = S.canvasWidth;
+  canvas.height = S.canvasHeight;
+  canvas.style.width = canvas.width * S.canvasMagnification + 'px';
+  canvas.style.height = canvas.height * S.canvasMagnification + 'px';
 
   // Save last time
   let lastTime;
+
+  // Title screen
+  global.currScreen = new TitleScreen();
 
   /**
    * @desc This function represents a tick with respect to the game. 
@@ -110,8 +136,8 @@ const main = (function(){
     let now = Date.now();
     let dt = (now - lastTime) / 1000.0;
 
-    game.update(dt);
-    game.render();
+    global.currScreen.update(dt);
+    global.currScreen.render();
 
     lastTime = now;
 

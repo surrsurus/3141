@@ -46,6 +46,11 @@ keyboard.bind('shift', function(e) {
 }, function(e) {
     player.removeSprint();
 });
+
+// Start game
+keyboard.bind('enter', function(e) {
+    global.startGame = true;
+});
   
 // Toggle debug mode
 keyboard.bind('e', function(e) {

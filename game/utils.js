@@ -31,7 +31,22 @@ const iso2Cart = (isoX, isoY) => {
   return [cartX, cartY];
 };
 
+/**
+ * Sleep function
+ */
+const sleep = (milliseconds) => {
+  let start = new Date().getTime();
+  for (let i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+};
+
+
+
 module.exports = {
   cart2Iso,
-  iso2Cart
+  iso2Cart,
+  sleep
 };
