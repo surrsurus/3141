@@ -7,11 +7,11 @@
 const player = require('./player');
 const environment = require('./environment');
 const keyboard = require('./keyboard');
-const bg = require('./background');
 
 // Objects/Classes
 const S = require('./settings');
 const Camera = require('./camera');
+const Background = require('./background');
 
 // Canvas
 const canvas = document.querySelector('canvas');
@@ -77,6 +77,9 @@ class GameScreen extends Screen {
     this.camera = new Camera(canvas, 0, 0);
     this.camera.update(ctx, player);
 
+    // Initialize the background
+    this.bg = new Background();
+
   }
 
   /**
@@ -90,7 +93,7 @@ class GameScreen extends Screen {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // Render the background, the player, then the foreground
-    bg.render(ctx, this.camera);
+    this.bg.render(ctx, this.camera);
     environment.render(ctx, this.camera);
     player.render(ctx, this.camera);
     environment.renderForeground(ctx, this.camera);
