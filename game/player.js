@@ -329,9 +329,13 @@ class Player {
    * @param {String} dir - String that represents a direction
    */
   addDirection(dir) {
+
+    if (this.direction.length > 1) return;
+
     if (this.direction.indexOf(dir) === -1) {
       this.direction.push(dir);
     }
+
     this.moving = true;
     this.idleDirection = dir;
   }
