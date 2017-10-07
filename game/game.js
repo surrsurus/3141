@@ -195,7 +195,7 @@ let gameScreen = new GameScreen();
   * @desc Main function that auto-executes and makes the game object render and update animations in a loop
   * @main
   */
-const main = (function(){
+const main = ( () => {
 
   /**
    * Initialize canvas

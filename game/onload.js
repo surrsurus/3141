@@ -2,7 +2,7 @@
  * @desc Execute this script as soon as the body loads
  * @function
  */
-window.onload = function() {
+window.onload = () => {
 
   // Start game
   global.startGame = false;
