@@ -95,8 +95,8 @@ class Player {
    * @desc Render player to the screen depending on whether they are moving or idle as well as determining which sprite or sprite set to render
    * @method
    * 
-   * @param {Object} ctx Canvas context
-   * @param {Object} camera Camera object
+   * @param {Object} ctx - Canvas context
+   * @param {Object} camera - Camera object
    */
   render(ctx, camera) {
 
@@ -207,10 +207,10 @@ class Player {
    * @desc Render a shadow beneath the player, assumes this is drawn before player
    * @method
    * 
-   * @param {Object} ctx Canvas context
-   * @param {Object} camera
-   * @param {Number} xr x-radius length
-   * @param {Number} yr y-radius length
+   * @param {Object} ctx - Canvas context
+   * @param {Object} camera - Camera object
+   * @param {Number} xr - x-radius length
+   * @param {Number} yr - y-radius length
    */
   renderShadow(ctx, camera, xr, yr) {
 
@@ -243,7 +243,7 @@ class Player {
    * @desc Update the player's speed, direction, and prevent them from going oob
    * @method
    * 
-   * @param {Object} environment 
+   * @param {Object} environment - Environment object
    */
   update(environment) {
     let speed = this.speed * this.sprint;
@@ -297,11 +297,11 @@ class Player {
    * @desc Retrn the player's boundary box
    * @method
    * 
-   * @return returns the player's hitbox or footprint
+   * @return {Object} - Returns the player's hitbox/footprint
    */
   getBB() {
     return {
-      top: this.y + this.height - 5,
+      top: this.y + this.height - 4,
       right: this.x + this.width - 10,
       bottom: this.y + this.height,
       left: this.x + 10,
@@ -326,7 +326,7 @@ class Player {
 
   /**
    * @desc Add a direction to a player, typically based on what key is being pressed
-   * @param {String} dir String that represents a direction
+   * @param {String} dir - String that represents a direction
    */
   addDirection(dir) {
     if (this.direction.indexOf(dir) === -1) {
@@ -338,7 +338,7 @@ class Player {
 
   /**
    * @desc Remove a direction, typically based on what key is being released
-   * @param {String} dir String that represents a direction
+   * @param {String} dir - String that represents a direction
    */
   removeDirection(dir) {
     this.direction = this.direction.filter(d => d !== dir);

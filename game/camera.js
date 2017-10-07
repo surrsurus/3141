@@ -10,9 +10,9 @@ class Camera {
 	 * @desc Constructor for Camera object
 	 * @constructor
 	 * 
-	 * @param {Object} canvas 
-	 * @param {Number} startX 
-	 * @param {Number} startY 
+	 * @param {Object} canvas - Canvas object
+	 * @param {Number} startX - Starting x position
+	 * @param {Number} startY - Starting y position
 	 */
 	constructor(canvas, startX, startY) {
 		this.offsetX = startX - canvas.width / S.cameraOffset;
@@ -25,8 +25,8 @@ class Camera {
 	 * @desc Update function gets called every tick and by defaults always centers around the player
 	 * @method
 	 * 
-	 * @param {Object} ctx 
-	 * @param {Object} player 
+	 * @param {Object} ctx - Canvas context
+	 * @param {Object} player - Player object
 	 */
 	update(ctx, player) {
 		this.offsetX = ctx.canvas.width / S.cameraOffset - player.x - player.width;

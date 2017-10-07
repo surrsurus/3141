@@ -99,7 +99,7 @@ class GameScreen extends Screen {
    * @desc Update every object, namely the environment and player
    * @method
    * 
-   * @param {Number} dt Datetime
+   * @param {Number} dt - Datetime
    */
   update(dt) {
 
@@ -153,7 +153,7 @@ class TitleScreen extends Screen {
    * @desc Check for event to transition to game screen
    * @method
    * 
-   * @param {Number} dt Datetime
+   * @param {Number} dt - Datetime
    */
   update(dt) {
 

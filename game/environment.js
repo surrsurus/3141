@@ -277,8 +277,7 @@ class Environment {
       [r2.left, r2.top]
     ]]);
   
-    let overlapping = overlaps(poly1, poly2);
-    return overlapping;
+    return overlaps(poly1, poly2);
   }
   
 }
