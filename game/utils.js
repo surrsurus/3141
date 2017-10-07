@@ -34,19 +34,18 @@ const iso2Cart = (isoX, isoY) => {
 /**
  * Sleep function
  */
-const sleep = (milliseconds) => {
-  let start = new Date().getTime();
-  for (let i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
-};
-
-
+// Not necessary to have rn
+// const sleep = (milliseconds) => {
+//   let start = new Date().getTime();
+//   for (let i = 0; i < 1e7; i++) {
+//     if ((new Date().getTime() - start) > milliseconds){
+//       break;
+//     }
+//   }
+// };
 
 module.exports = {
   cart2Iso,
   iso2Cart,
-  sleep
+  // sleep
 };

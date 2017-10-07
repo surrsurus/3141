@@ -23,7 +23,7 @@ class Camera {
 
 	/**
 	 * @desc Update function gets called every tick and by defaults always centers around the player
-	 * @function
+	 * @method
 	 * 
 	 * @param {Object} ctx 
 	 * @param {Object} player 

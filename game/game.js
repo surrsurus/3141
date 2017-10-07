@@ -170,6 +170,7 @@ class TitleScreen extends Screen {
 
       // Transfer ownership to a game screen
       currentScreen = gameScreen;
+      currentScreen.update(dt);
 
     }
 
