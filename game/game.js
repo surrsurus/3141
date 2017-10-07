@@ -117,6 +117,7 @@ class GameScreen extends Screen {
     }
 
     // Update all game objects
+    this.bg.update(dt);
     environment.update(dt);
     this.camera.update(ctx, player);
     player.update(environment);

@@ -196,7 +196,7 @@ class Player {
     // Skip some frames so the animation isn't moving at hyperspeed
     if (this.tickCount < 5) return;
 
-    // Cycle through frames s
+    // Cycle through frames
     this.tickCount = 0;
     this.frame++;
     if (this.frame >= this.frames[dir].length) this.frame = 0;
