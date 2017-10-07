@@ -277,4 +277,6 @@ class Player {
 
 }
 
+// Player is a singleton, so just give anything that requires this access to the same object
+// We don't need more than one player after all
 module.exports = new Player();

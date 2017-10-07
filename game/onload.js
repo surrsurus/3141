@@ -8,6 +8,7 @@ window.onload = function() {
   global.debug = false;
 
   // Set regen mode
+  // Determines if a new map is to be generated for debugging purposes
   global.regen = false;
     
   // Check if rot.js can work on this browser

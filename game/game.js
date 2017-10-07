@@ -1,14 +1,18 @@
 /**
- * Include this file to start the game
+ * This is the file that contains the Game object that controls all entities the game needs to function
+ * The game will automatically call its main function as soon as this file is added via a script tag in an html file
  */
 
+ // Game objects
 const player = require('./player');
 const environment = require('./environment');
 const keyboard = require('./keyboard');
 
+// Objects/Classes
 const S = require('./settings');
 const Camera = require('./camera');
 
+// Canvas
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -25,6 +29,7 @@ class Game {
    */
   constructor() {
 
+    // Get that pixelated look
     ctx.imageSmoothingEnabled = false;
 
     // Initialize the canvas
@@ -47,8 +52,10 @@ class Game {
    */
   render() {
     
+    // Clear the screen
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    // Render the background, the player, then the foreground
     environment.render(ctx, this.camera);
     player.render(ctx, this.camera);
     environment.renderForeground(ctx, this.camera);
@@ -63,6 +70,7 @@ class Game {
    */
   update(dt) {
 
+    // DEBUG: Regenerate the map
     if (global.regen) {
       global.regen = false;
       environment.genDungeon();
@@ -70,6 +78,7 @@ class Game {
       this.camera = new Camera(canvas, 0, 0);
     }
 
+    // Update all game objects
     environment.update(dt);
     this.camera.update(ctx, player);
     player.update(environment);
@@ -78,31 +87,41 @@ class Game {
 
 }
 
-/**
- * Main game loop
- */
+ /**
+   * @desc Main function that makes the game object render and update animations in a loop
+   * @main
+   */
+const main = (function(){
 
-// Create game object
-const game = new Game();
+  // Create game object
+  const game = new Game();
 
-// Save last time
-let lastTime;
+  // Save last time
+  let lastTime;
 
-/**
- * @desc Main function that makes the game object render and update in a loop
- * @main
- */
-const main = () => {
+  /**
+   * @desc This function represents a tick with respect to the game. 
+   * Every tick, the game state is updated, objects are rendered, and animations are played
+   * @function
+   */
+  const tick = () => {
 
-  let now = Date.now();
-  let dt = (now - lastTime) / 1000.0;
+    // Get time 
+    let now = Date.now();
+    let dt = (now - lastTime) / 1000.0;
 
-  game.update(dt);
-  game.render();
+    game.update(dt);
+    game.render();
 
-  lastTime = now;
-  requestAnimationFrame(main);
+    lastTime = now;
 
-};
+    // Update animation
+    requestAnimationFrame(tick);
 
-main();
+  };
+
+  // Start the game loop
+  tick();
+
+})();
+
