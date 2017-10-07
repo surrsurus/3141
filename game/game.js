@@ -78,7 +78,7 @@ class GameScreen extends Screen {
     this.camera.update(ctx, player);
 
     // Initialize the background
-    this.bg = new Background();
+    this.bg = new Background(ctx);
 
   }
 

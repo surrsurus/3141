@@ -10,10 +10,17 @@ class Background {
    * @desc Constructor for Background. Only holds vars for a pulsing background
    * @constructor
    */
-  constructor() {
+  constructor(ctx) {
+
+    // Current color rgb value
     this.bg_shade = 0;
+
+    // Direction of color
     this.pulse_up = true;
+
+    // Timer based on tickrate
     this.tick_count = 0;
+
   }
 
   /**
@@ -55,6 +62,10 @@ class Background {
 
   }
 
+  /**
+   * @desc Update the background by incrementing the tick count
+   * @param {Number} dt - Datetime 
+   */
   update(dt) {
     this.tick_count++;
   }
