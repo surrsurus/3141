@@ -49,6 +49,8 @@ class Environment {
     this.setBounds();
   
     this.matrix = [];
+
+    this.bg_shade = 0;
   
     for (let y = 0; y < this.dungeon.tiles[0].length; y++) {
       this.matrix.push([]);
@@ -160,14 +162,6 @@ class Environment {
   update() {}
 
   render(ctx, camera) {
-
-    let grd=ctx.createLinearGradient(0, 0, 0, ctx.canvas.height + 1000);
-    grd.addColorStop(0,"black");
-    grd.addColorStop(1,"#FFBF00");
-    ctx.fillStyle=grd;
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  
-    ctx.save();
   
     ctx.translate(camera.offsetX, camera.offsetY);
   
@@ -193,21 +187,6 @@ class Environment {
     }
   
     ctx.restore();
-  }
-
-  sideFade(x, y, h, ctx, side) {
-    for (let i = 0; i < h; i++) {
-      ctx.fillStyle = 'rgb(' + side - (17 * i) +', ' + side - (17 * i) + ', ' + side - (17 * i)+ ')';
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + S.tileWidth / 2, y + S.tileHeight / 2);
-      ctx.lineTo(x + S.tileWidth / 2, y + S.tileHeight / 2 + 30);
-      ctx.lineTo(x, y + S.tileHeight + 30);
-      ctx.lineTo(x - S.tileWidth / 2, y + S.tileHeight / 2 + 30);
-      ctx.lineTo(x - S.tileWidth / 2, y + S.tileHeight / 2);
-      ctx.lineTo(x, y);
-      ctx.fill();
-    }
   }
 
   drawTile(x, y, ctx, top = '#eeeeee', side = '#dddddd') {

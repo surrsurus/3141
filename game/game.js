@@ -7,6 +7,7 @@
 const player = require('./player');
 const environment = require('./environment');
 const keyboard = require('./keyboard');
+const bg = require('./background');
 
 // Objects/Classes
 const S = require('./settings');
@@ -89,6 +90,7 @@ class GameScreen extends Screen {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // Render the background, the player, then the foreground
+    bg.render(ctx, this.camera);
     environment.render(ctx, this.camera);
     player.render(ctx, this.camera);
     environment.renderForeground(ctx, this.camera);
