@@ -1,14 +1,18 @@
 /**
- * Include this file to start the game
+ * This is the file that contains the Game object that controls all entities the game needs to function
+ * The game will automatically call its main function as soon as this file is added via a script tag in an html file
  */
 
+ // Game objects
 const player = require('./player');
 const environment = require('./environment');
 const keyboard = require('./keyboard');
 
+// Objects/Classes
 const S = require('./settings');
 const Camera = require('./camera');
 
+// Canvas
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -20,24 +24,18 @@ const ctx = canvas.getContext('2d');
 class Game {
 
   /**
-   * @desc Initialize the canvas, player positon, and camera
+   * @desc Initialize the canvas, player positon, and camera.
+   * Assumes canvas is already initialized
    * @constructor
    */
   constructor() {
-
-    ctx.imageSmoothingEnabled = false;
-
-    // Initialize the canvas
-    canvas.width = S.canvasWidth;
-    canvas.height = S.canvasHeight;
-    canvas.style.width = canvas.width * S.canvasMagnification + 'px';
-    canvas.style.height = canvas.height * S.canvasMagnification + 'px';
 
     // Place the player
     [player.x, player.y] = environment.findStart();
 
     // Initialize the camera
     this.camera = new Camera(canvas, 0, 0);
+    this.camera.update(ctx, player);
 
   }
 
@@ -47,8 +45,10 @@ class Game {
    */
   render() {
     
+    // Clear the screen
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    // Render the background, the player, then the foreground
     environment.render(ctx, this.camera);
     player.render(ctx, this.camera);
     environment.renderForeground(ctx, this.camera);
@@ -63,6 +63,7 @@ class Game {
    */
   update(dt) {
 
+    // DEBUG: Regenerate the map
     if (global.regen) {
       global.regen = false;
       environment.genDungeon();
@@ -70,6 +71,7 @@ class Game {
       this.camera = new Camera(canvas, 0, 0);
     }
 
+    // Update all game objects
     environment.update(dt);
     this.camera.update(ctx, player);
     player.update(environment);
@@ -78,31 +80,74 @@ class Game {
 
 }
 
-/**
- * Main game loop
- */
+class TitleScreen {
+  constructor() {
+    this.title = new Image();
+    this.title.src = "./assets/ui/title.png";
+  }
 
-// Create game object
-const game = new Game();
+  render() {
+    ctx.drawImage(this.title, 0, 0);
+  }
 
-// Save last time
-let lastTime;
+  update() {
+    if (global.startGame) {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.save();
+      global.currScreen = new Game();
+    }
+  }
 
-/**
- * @desc Main function that makes the game object render and update in a loop
- * @main
- */
-const main = () => {
+}
 
-  let now = Date.now();
-  let dt = (now - lastTime) / 1000.0;
+ /**
+   * @desc Main function that makes the game object render and update animations in a loop
+   * @main
+   */
+const main = (function(){
 
-  game.update(dt);
-  game.render();
+  /**
+   * Initialize canvas
+   */
+  // Get that pixelated look
+  ctx.imageSmoothingEnabled = false;
+  
+  // Initialize the canvas
+  canvas.width = S.canvasWidth;
+  canvas.height = S.canvasHeight;
+  canvas.style.width = canvas.width * S.canvasMagnification + 'px';
+  canvas.style.height = canvas.height * S.canvasMagnification + 'px';
 
-  lastTime = now;
-  requestAnimationFrame(main);
+  // Save last time
+  let lastTime;
 
-};
+  // Title screen
+  global.currScreen = new TitleScreen();
 
-main();
+  /**
+   * @desc This function represents a tick with respect to the game. 
+   * Every tick, the game state is updated, objects are rendered, and animations are played
+   * @function
+   */
+  const tick = () => {
+
+    // Get time 
+    let now = Date.now();
+    let dt = (now - lastTime) / 1000.0;
+
+    global.currScreen.update(dt);
+    global.currScreen.render();
+
+    lastTime = now;
+
+    // Update animation
+    requestAnimationFrame(tick);
+
+  };
+
+  // Start the game loop
+  tick();
+
+})();
+

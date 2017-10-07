@@ -6,12 +6,16 @@
 const keyboard = require('keyboardjs');
 const player = require('./player');
 
+// Spit out keypresses for debugging
 if (global.debug) {
     document.addEventListener('keydown', function(e) {
         console.log(e);
   });
 }
 
+/**
+ * Movement keys
+ */
 keyboard.bind('a', function(e) {
     player.addDirection('left');
 }, function(e) {
@@ -36,17 +40,25 @@ keyboard.bind('d', function(e) {
     player.removeDirection('right');
 });
 
-keyboard.bind('e', function(e) {
-    global.debug = !global.debug;
-});
-
-keyboard.bind('r', function(e) {
-    global.regen = !global.regen;
-});
-  
+// Sprint
 keyboard.bind('shift', function(e) {
     player.addSprint();
 }, function(e) {
     player.removeSprint();
+});
+
+// Start game
+keyboard.bind('enter', function(e) {
+    global.startGame = true;
+});
+  
+// Toggle debug mode
+keyboard.bind('e', function(e) {
+    global.debug = !global.debug;
+});
+
+// Generate a new map
+keyboard.bind('r', function(e) {
+    global.regen = !global.regen;
 });
   
