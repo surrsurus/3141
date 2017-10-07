@@ -207,6 +207,19 @@ class Environment {
     ctx.lineTo(isoX, isoY);
     ctx.fill();
 
+    ctx.strokeStyle = top;
+
+    ctx.beginPath();
+    ctx.moveTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2);
+    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2 + 10);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2);
+    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2 + 10);
+    ctx.stroke();
+
+
     ctx.fillStyle = top;
   
     ctx.beginPath();
