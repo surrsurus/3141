@@ -49,6 +49,8 @@ class Environment {
     this.setBounds();
   
     this.matrix = [];
+
+    this.bg_shade = 0;
   
     for (let y = 0; y < this.dungeon.tiles[0].length; y++) {
       this.matrix.push([]);
@@ -160,10 +162,6 @@ class Environment {
   update() {}
 
   render(ctx, camera) {
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  
-    ctx.save();
   
     ctx.translate(camera.offsetX, camera.offsetY);
   
@@ -191,7 +189,7 @@ class Environment {
     ctx.restore();
   }
 
-  drawTile(x, y, ctx, top = '#dddddd', side = '#eeeeee') {
+  drawTile(x, y, ctx, top = '#eeeeee', side = '#dddddd') {
     let cartX = x * S.tileWidth / 2;
     let cartY = y * S.tileHeight;
     let isoX = cartX - cartY;
@@ -202,13 +200,13 @@ class Environment {
     ctx.beginPath();
     ctx.moveTo(isoX, isoY);
     ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2);
-    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2 + 20);
-    ctx.lineTo(isoX, isoY + S.tileHeight + 20);
-    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2 + 20);
+    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2 + 10);
+    ctx.lineTo(isoX, isoY + S.tileHeight + 10);
+    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2 + 10);
     ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2);
     ctx.lineTo(isoX, isoY);
     ctx.fill();
-  
+
     ctx.fillStyle = top;
   
     ctx.beginPath();
@@ -277,8 +275,7 @@ class Environment {
       [r2.left, r2.top]
     ]]);
   
-    let overlapping = overlaps(poly1, poly2);
-    return overlapping;
+    return overlaps(poly1, poly2);
   }
   
 }

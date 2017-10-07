@@ -6,47 +6,59 @@
 const keyboard = require('keyboardjs');
 const player = require('./player');
 
+// Spit out keypresses for debugging
 if (global.debug) {
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', (e) => {
         console.log(e);
   });
 }
 
-keyboard.bind('a', function(e) {
+/**
+ * Movement keys
+ */
+keyboard.bind('a', (e) => {
     player.addDirection('left');
-}, function(e) {
+}, (e) => {
     player.removeDirection('left');
 });
   
-keyboard.bind('w', function(e) {
+keyboard.bind('w', (e) => {
     player.addDirection('up');
-}, function(e) {
+}, (e) => {
     player.removeDirection('up');
 });
   
-keyboard.bind('s', function(e) {
+keyboard.bind('s', (e) => {
     player.addDirection('down');
-}, function(e) {
+}, (e) => {
     player.removeDirection('down');
 });
 
-keyboard.bind('d', function(e) {
+keyboard.bind('d', (e) => {
     player.addDirection('right');
-}, function(e) {
+}, (e) => {
     player.removeDirection('right');
 });
 
-keyboard.bind('e', function(e) {
+// Sprint
+keyboard.bind('shift', (e) => {
+    player.addSprint();
+}, (e) => {
+    player.removeSprint();
+});
+
+// Start game
+keyboard.bind('enter', (e) => {
+    global.startGame = true;
+});
+  
+// Toggle debug mode
+keyboard.bind('e', (e) => {
     global.debug = !global.debug;
 });
 
-keyboard.bind('r', function(e) {
+// Generate a new map
+keyboard.bind('r', (e) => {
     global.regen = !global.regen;
-});
-  
-keyboard.bind('shift', function(e) {
-    player.addSprint();
-}, function(e) {
-    player.removeSprint();
 });
   

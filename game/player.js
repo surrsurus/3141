@@ -1,7 +1,15 @@
 const S = require('./settings');
 
+/**
+ * @desc Player class manages the player and their input, the character sprite/model, and hitbox
+ * @class
+ */
 class Player {
 
+  /**
+   * @desc Constructor for player. Most important part is that it sets up the frames for animation
+   * @constructor
+   */
   constructor() {
     this.loaded = false;
     this.speed = 2;
@@ -83,53 +91,77 @@ class Player {
     };
   }
 
+  /**
+   * @desc Render player to the screen depending on whether they are moving or idle as well as determining which sprite or sprite set to render
+   * @method
+   * 
+   * @param {Object} ctx - Canvas context
+   * @param {Object} camera - Camera object
+   */
   render(ctx, camera) {
+
+    // Step 1: Render shadow
+
+    // Since the player's occupied space looks visibly bigger when running, a larger shadow is used
+    // for when the player is moving
+
+    // Don't render shadow if debug mode is enabled since it interferes with the render of the boundary box
+    if (!global.debug) {
+      if (this.moving) {
+        this.renderShadow(ctx, camera, 6, 2);
+      } else {
+        this.renderShadow(ctx, camera, 5, 2);
+      }
+    }
+
+    // Step 2: Determine what direction the player is facing in an iso view
+    
+    // This is necessary since the player's animations are made with cartesian movements in mind, but
+    // this game is currently isometric
+
+    // Get player's current directin
     let dir = this.moving ? this.direction[0] : this.idleDirection;
 
-    if (this.moving) {
-      this.renderShadow(ctx, camera, 6, 2);
-    } else {
-      this.renderShadow(ctx, camera, 5, 2);
-    }
-
-    if (dir === 'down') {
-      dir = 'left';
-    } else if (dir === 'up') {
-      dir = 'right'
-    }
+    // Fix some basic animation issues that would make movment look wonky
+    // if not here
+    if (dir === 'down') dir = 'left';
+    else if (dir === 'up') dir = 'right';
 
     // Change facing dir depending if multiple dirs are active
-    if (this.direction.includes('up') && this.direction.includes('right')) {
+    // These happen when the player holds down multiple keys at once
+    if (this.direction.includes('up') && this.direction.includes('right')) 
       dir = 'right';
-    }
 
-    if (this.direction.includes('up') && this.direction.includes('left')) {
+    if (this.direction.includes('up') && this.direction.includes('left'))
       dir = 'up';
-    }
 
-    if (this.direction.includes('down') && this.direction.includes('left')) {
+    if (this.direction.includes('down') && this.direction.includes('left'))
       dir = 'left';
-    }
 
-    if (this.direction.includes('down') && this.direction.includes('right')) {
+    if (this.direction.includes('down') && this.direction.includes('right')) 
       dir = 'down';
-    }
 
+    // If the player is holding down two conflicting keys, they should be idle and not move
     if (this.direction.includes('up') && this.direction.includes('down') ||
         this.direction.includes('left') && this.direction.includes('right')) {
       this.moving = false;
     }
 
+    // Step 3: Render
+
     ctx.save();
 
+    // Move camera to player location
     ctx.translate(camera.offsetX, camera.offsetY);
 
+    // Draw boundary box
     if (global.debug) {
       let box = this.getBB();
       ctx.strokeStyle = 'red';
       ctx.strokeRect(box.left, box.top, box.right - box.left, box.bottom - box.top);
-    }
+    } 
 
+    // Draw running animation if moving
     if (this.moving) {
       ctx.drawImage(
         this.imgMoving,
@@ -161,55 +193,79 @@ class Player {
 
     this.tickCount++;
 
-    if (this.tickCount < 5) {
-      return;
-    }
+    // Skip some frames so the animation isn't moving at hyperspeed
+    if (this.tickCount < 5) return;
 
+    // Cycle through frames
     this.tickCount = 0;
     this.frame++;
-    if (this.frame >= this.frames[dir].length) {
-      this.frame = 0;
-    }
+    if (this.frame >= this.frames[dir].length) this.frame = 0;
 
   }
 
-  renderShadow(ctx, camera, x, y) {
+  /**
+   * @desc Render a shadow beneath the player, assumes this is drawn before player
+   * @method
+   * 
+   * @param {Object} ctx - Canvas context
+   * @param {Object} camera - Camera object
+   * @param {Number} xr - x-radius length
+   * @param {Number} yr - y-radius length
+   */
+  renderShadow(ctx, camera, xr, yr) {
+
     ctx.save();
+
+    // Move camera into position
     ctx.translate(camera.offsetX, camera.offsetY);
+
+    // Start tracing an ellipse
     ctx.beginPath();
-    ctx.ellipse(this.x+16, this.y+30, x, y, Math.PI/180, 0, 2 * Math.PI);
+    // Add values to x and y to center the shadow under the player sprite
+    // WARN: If the player sprite changes, this may need to be changed
+    ctx.ellipse(this.x+16, this.y+30, xr, yr, Math.PI/180, 0, 2 * Math.PI);
+
     ctx.restore();
+
+    // Fill outside of shadow with a lighter shade of black to simulate
+    // the shadow fading
     ctx.fillStyle = '#222222';
     ctx.fill();
     ctx.lineWidth = 1;
     ctx.strokeStyle = '#333333';
     ctx.stroke();
+
     ctx.restore();
+
   }
 
+  /**
+   * @desc Update the player's speed, direction, and prevent them from going oob
+   * @method
+   * 
+   * @param {Object} environment - Environment object
+   */
   update(environment) {
     let speed = this.speed * this.sprint;
     let origY = this.y;
     let origX = this.x;
 
-    // Change facing dir depending if multiple dirs are active
-    if (this.direction.includes('up') && this.direction.includes('right')) {
+    // Change speed depending on which direction the player is moving in
+    // Since the width of tiles is greater than their hieght (though it doesnt look that way)
+    // The player will not move directly on the iso grid.
+    // Since the current settings have the length:width ratio at 2:1 the Y or X axis movement speed
+    // must be compensated for, therefore we squash y movement speed by 2
+    // WARN: if tile sizes change, this surely needs to be updated
+
+    // Slow down doubly when moving diagonally
+    if (this.direction.includes('up') && this.direction.includes('right')) 
       speed /= 2;
-    }
 
-    if (this.direction.includes('up') && this.direction.includes('left')) {
-      speed /= 1;
-    }
-
-    if (this.direction.includes('down') && this.direction.includes('left')) {
+    if (this.direction.includes('down') && this.direction.includes('left'))
       speed /= 2;
-    }
 
-    if (this.direction.includes('down') && this.direction.includes('right')) {
-      speed /= 1;
-    }
-
-    // Remove 2 to return to cartesian movement
+    // Divide y axis speed by 2 since that compensates for the difference between
+    // tile length and width
     this.direction.forEach(dir => {
       if (dir === 'up') {
         this.y -= speed/2;
@@ -229,52 +285,72 @@ class Player {
       }
     });
 
-    // Chec to see if we bumped into anything! if we did, reset the position
+    // Check to see if we bumped into anything! if we did, reset the position
     if (environment.isOutOfBounds(this.getBB())) {
       this.x = origX;
       this.y = origY;
     }
+
   }
 
-  // Returns bounding box, this is the players 'footprint';
+  /**
+   * @desc Retrn the player's boundary box
+   * @method
+   * 
+   * @return {Object} - Returns the player's hitbox/footprint
+   */
   getBB() {
     return {
-      top: this.y + this.height - 5,
+      top: this.y + this.height - 4,
       right: this.x + this.width - 10,
       bottom: this.y + this.height,
       left: this.x + 10,
     };
   }
 
+  /**
+   * @desc Make the player move faster by modifying their speed scale
+   * @method
+   */
   addSprint() {
     this.sprint = 2;
   }
 
+  /**
+   * @desc Return the player's speed to normal
+   * @method
+   */
   removeSprint() {
     this.sprint = 1;
   }
 
+  /**
+   * @desc Add a direction to a player, typically based on what key is being pressed
+   * @param {String} dir - String that represents a direction
+   */
   addDirection(dir) {
-    // this.removeDirectionAll();
+
+    if (this.direction.length > 1) return;
+
     if (this.direction.indexOf(dir) === -1) {
       this.direction.push(dir);
     }
+
     this.moving = true;
     this.idleDirection = dir;
   }
 
+  /**
+   * @desc Remove a direction, typically based on what key is being released
+   * @param {String} dir - String that represents a direction
+   */
   removeDirection(dir) {
     this.direction = this.direction.filter(d => d !== dir);
     this.moving = this.direction.length > 0;
-  }
-
-  removeDirectionAll() {
-    this.removeDirection('up');
-    this.removeDirection('down');
-    this.removeDirection('left');
-    this.removeDirection('right');
-  }
+  } 
 
 }
 
+// Player is a singleton, so just give anything that requires this access to the same object
+// We don't need more than one player after all
 module.exports = new Player();

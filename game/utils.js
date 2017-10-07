@@ -6,7 +6,7 @@
  * @param {Number} x 
  * @param {Number} y 
  * 
- * @return {Array} A tuple of new iso coords
+ * @return {Array} - A tuple of new iso coords
  */
 const cart2Iso = (x, y) => {
   let isoX = x - y;
@@ -22,7 +22,7 @@ const cart2Iso = (x, y) => {
  * @param {Number} x 
  * @param {Number} y 
  * 
- * @return {Array} A tuple of new cartesian coords
+ * @return {Array} - A tuple of new cartesian coords
  */
 const iso2Cart = (isoX, isoY) => {
   let cartX = (2 * isoY + isoX) / 2;
@@ -31,7 +31,21 @@ const iso2Cart = (isoX, isoY) => {
   return [cartX, cartY];
 };
 
+/**
+ * Sleep function
+ */
+// Not necessary to have rn
+// const sleep = (milliseconds) => {
+//   let start = new Date().getTime();
+//   for (let i = 0; i < 1e7; i++) {
+//     if ((new Date().getTime() - start) > milliseconds){
+//       break;
+//     }
+//   }
+// };
+
 module.exports = {
   cart2Iso,
-  iso2Cart
+  iso2Cart,
+  // sleep
 };
