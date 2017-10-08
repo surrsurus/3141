@@ -158,7 +158,13 @@ class Player {
     if (global.debug) {
       let box = this.getBB();
       ctx.strokeStyle = 'red';
-      ctx.strokeRect(box.left, box.top, box.right - box.left, box.bottom - box.top);
+      ctx.beginPath();
+      ctx.moveTo(box.left, box.top);
+      ctx.lineTo(box.left + (box.right - box.left) / 2, box.top + (box.bottom - box.top) / 2);
+      ctx.lineTo(box.left, box.top + (box.bottom - box.top));
+      ctx.lineTo(box.left - (box.right - box.left) / 2, box.top + (box.bottom - box.top) / 2);
+      ctx.lineTo(box.left, box.top);
+      ctx.stroke();
     } 
 
     // Draw running animation if moving
@@ -304,7 +310,7 @@ class Player {
       top: this.y + this.height - 4,
       right: this.x + this.width - 10,
       bottom: this.y + this.height,
-      left: this.x + 10,
+      left: this.x + 16,
     };
   }
 
