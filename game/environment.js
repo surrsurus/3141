@@ -332,10 +332,10 @@ class Environment {
       this.__drawTile(tile.x, tile.y, ctx);
 
       // Draw door tiles as red tiles
-      else if (this.dungeon.tiles[x][y].type === 'door')
+      else if (tile.data.type === 'door')
       this.__drawTile(tile.x, tile.y, ctx, '#ffaaaa', '#ff0000');
     }
-
+    
     // Draw the boundaries if debug is on
     if (eh.keyEvents.debug) {
 
