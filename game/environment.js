@@ -117,6 +117,22 @@ class Environment {
   }
 
   /**
+   * @desc Generator method to iterate over the dungeon tiles
+   * @generator
+   * 
+   * @param {Number} start - Lower bound of map, assumes map is square, default value is 0
+   * @param {Number} end - Upper bound of map, assumes map is square, default value is dungeon.tiles.length
+   * @yield {Object} Object with tile, x, and y properties
+   */
+  * __dungeonIter(start = 0, end = this.dungeon.tiles.length) {
+    for (let x = 0; x < this.dungeon.tiles.length; x++) {
+      for (let y = 0; y < this.dungeon.tiles.length; y++) {
+        yield { data: this.dungeon.tiles[x][y], x: x, y: y };
+      }
+    }
+  }
+
+  /**
    * @desc Determine if two isometric rectangles are intersecting
    * @method
    * 
@@ -209,26 +225,22 @@ class Environment {
     this.bounds = [];
     
     // Purposefully trigger exceptions by accessing oob elements
-    for (let x = -1; x < this.dungeon.tiles.length + 1; x++) {
+    for (let tile of this.__dungeonIter(-1, this.dungeon.tiles.length + 1)) {
 
-      for (let y = -1; y < this.dungeon.tiles.length + 1; y++) {
-
-        try {
-
-          // Walls recieve boundaries
-          if (this.dungeon.tiles[x][y].type === 'wall') {
-            this.__pushBounds(x, y);
-          }
-
+      try {
+        
+        // Walls recieve boundaries
+        if (tile.data.type === 'wall') {
+          this.__pushBounds(tile.x, tile.y);
         }
-
-        // Since index errors are bound to happen, we know that if an index error occurs,
-        // the tile we're looking at doesn't exist on the map, therefore we can draw a boundary around it
-        // to prevent player from leaving the map if a floor tile spawns on the edge
-        catch (e) {
-          this.__pushBounds(x, y);
-        }
-
+        
+      }
+        
+      // Since index errors are bound to happen, we know that if an index error occurs,
+      // the tile we're looking at doesn't exist on the map, therefore we can draw a boundary around it
+      // to prevent player from leaving the map if a floor tile spawns on the edge
+      catch (e) {
+        this.__pushBounds(tile.x, tile.y);
       }
 
     }
@@ -251,20 +263,17 @@ class Environment {
     let startX;
     let startY;
 
-    for (let x = 0; x < this.dungeon.tiles.length; x++) {
-      for (let y = 0; y < this.dungeon.tiles.length; y++) {
+    for (let tile of this.__dungeonIter()) {
 
-        if (this.dungeon.tiles[x][y].type !== 'wall') {
+      if (tile.data.type !== 'wall') {
 
-          console.log(x, y);
-          // startX = x * S.tileWidth / 2 + S.tileWidth / 2;
-          // startY = y * S.tileHeight + S.tileHeight / 2;
-          startX = x * S.tileWidth / 2;
-          startY = y * S.tileHeight;
+        // console.log(x, y);
 
-          return U.cart2Iso(startX, startY);
+        startX = tile.x * S.tileWidth / 2;
+        startY = tile.y * S.tileHeight;
 
-        }
+        return U.cart2Iso(startX, startY);
+
       }
     }
   
@@ -316,21 +325,17 @@ class Environment {
   render(ctx, camera) {
   
     ctx.translate(camera.offsetX, camera.offsetY);
-  
-    for (let x = 0; x < this.dungeon.tiles.length; x++) {
-      for (let y = 0; y < this.dungeon.tiles.length; y++) {
 
-        // Draw floor tiles as white tiles
-        if (this.dungeon.tiles[x][y].type === 'floor')
-          this.__drawTile(x, y, ctx);
+    for (let tile of this.__dungeonIter()) {
+      // Draw floor tiles as white tiles
+      if (tile.data.type === 'floor')
+      this.__drawTile(tile.x, tile.y, ctx);
 
-        // Draw door tiles as red tiles
-        else if (this.dungeon.tiles[x][y].type === 'door')
-          this.__drawTile(x, y, ctx, '#ffaaaa', '#ff0000');
-
-      }
+      // Draw door tiles as red tiles
+      else if (this.dungeon.tiles[x][y].type === 'door')
+      this.__drawTile(tile.x, tile.y, ctx, '#ffaaaa', '#ff0000');
     }
-  
+
     // Draw the boundaries if debug is on
     if (eh.keyEvents.debug) {
 
