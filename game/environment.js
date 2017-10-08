@@ -3,6 +3,7 @@
  */
 
 const Dungeon = require('./dungeon/generator.js');
+const eh = require('./eventHandler');
 const U = require('./utils.js');
 const S = require('./settings');
 const turf = require('turf');
@@ -331,7 +332,7 @@ class Environment {
     }
   
     // Draw the boundaries if debug is on
-    if (global.debug) {
+    if (eh.keyEvents.debug) {
 
       ctx.strokeStyle = 'red';
 

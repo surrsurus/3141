@@ -7,6 +7,7 @@
 const player = require('./player');
 const environment = require('./environment');
 const keyboard = require('./keyboard');
+const eh = require('./eventHandler');
 
 // Objects/Classes
 const S = require('./settings');
@@ -109,8 +110,8 @@ class GameScreen extends Screen {
   update(dt) {
 
     // DEBUG: Regenerate the map
-    if (global.regen) {
-      global.regen = false;
+    if (eh.keyEvents.regenMap) {
+      eh.keyEvents.regenMap = false;
       environment.genDungeon();
       [player.x, player.y] = environment.findStart();
       this.camera = new Camera(canvas, 0, 0);
@@ -164,7 +165,7 @@ class TitleScreen extends Screen {
   update(dt) {
 
     // Check for specific event
-    if (global.startGame) {
+    if (eh.keyEvents.startGame) {
 
       // Clear screen
       ctx.fillStyle = 'black';
@@ -217,9 +218,6 @@ const main = ( () => {
 
   // Save last time
   let lastTime;
-
-  // Starting screen
-  currentScreen = new GameScreen();
 
   /**
    * @desc This function represents a tick with respect to the game. 

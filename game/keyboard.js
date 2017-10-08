@@ -5,9 +5,10 @@
 
 const keyboard = require('keyboardjs');
 const player = require('./player');
+const eh = require('./eventHandler');
 
 // Spit out keypresses for debugging
-if (global.debug) {
+if (eh.keyEvents.debug) {
     document.addEventListener('keydown', (e) => {
         console.log(e);
   });
@@ -49,16 +50,16 @@ keyboard.bind('shift', (e) => {
 
 // Start game
 keyboard.bind('enter', (e) => {
-    global.startGame = true;
+    eh.keyEvents.startGame = true;
 });
   
 // Toggle debug mode
 keyboard.bind('e', (e) => {
-    global.debug = !global.debug;
+    eh.keyEvents.debug = !eh.keyEvents.debug;
 });
 
 // Generate a new map
 keyboard.bind('r', (e) => {
-    global.regen = !global.regen;
+    eh.keyEvents.regenMap = !eh.keyEvents.regenMap;
 });
   

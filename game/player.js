@@ -1,4 +1,5 @@
 const S = require('./settings');
+const eh = require('./eventHandler');
 
 /**
  * @desc Player class manages the player and their input, the character sprite/model, and hitbox
@@ -141,6 +142,9 @@ class Player {
    */
   addDirection(dir) {
 
+    // Don't move if on title screen
+    if (!eh.keyEvents.startGame) return;
+
     if (this.direction.length > 1) return;
 
     if (this.direction.indexOf(dir) === -1) {
@@ -208,12 +212,11 @@ class Player {
     // for when the player is moving
 
     // Don't render shadow if debug mode is enabled since it interferes with the render of the boundary box
-    if (!global.debug) {
-      if (this.moving) {
+    if (!eh.keyEvents.debug) {
+      if (this.moving)
         this.__renderShadow(ctx, camera, 6, 2);
-      } else {
+      else
         this.__renderShadow(ctx, camera, 5, 2);
-      }
     }
 
     // Step 2: Determine what direction the player is facing in an iso view
@@ -257,7 +260,7 @@ class Player {
     ctx.translate(camera.offsetX, camera.offsetY);
 
     // Draw boundary box
-    if (global.debug) {
+    if (eh.keyEvents.debug) {
       let box = this.getBB();
       ctx.strokeStyle = 'red';
       ctx.beginPath();
