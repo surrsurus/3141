@@ -17,25 +17,25 @@ if (eh.keyEvents.debug) {
 /**
  * Movement keys
  */
-keyboard.bind('a', (e) => {
+keyboard.bind(['a', 'left'], (e) => {
     player.addDirection('left');
 }, (e) => {
     player.removeDirection('left');
 });
   
-keyboard.bind('w', (e) => {
+keyboard.bind(['w', 'up'], (e) => {
     player.addDirection('up');
 }, (e) => {
     player.removeDirection('up');
 });
   
-keyboard.bind('s', (e) => {
+keyboard.bind(['s', 'down'], (e) => {
     player.addDirection('down');
 }, (e) => {
     player.removeDirection('down');
 });
 
-keyboard.bind('d', (e) => {
+keyboard.bind(['d', 'right'], (e) => {
     player.addDirection('right');
 }, (e) => {
     player.removeDirection('right');
