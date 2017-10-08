@@ -164,8 +164,8 @@ class TitleScreen extends Screen {
    */
   update(dt) {
 
-    // Check for specific event
-    if (eh.keyEvents.startGame) {
+    // Check for unpause event
+    if (eh.state !== 'paused') {
 
       // Clear screen
       ctx.fillStyle = 'black';

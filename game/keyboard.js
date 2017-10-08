@@ -50,7 +50,7 @@ keyboard.bind('shift', (e) => {
 
 // Start game
 keyboard.bind('enter', (e) => {
-    eh.keyEvents.startGame = true;
+    eh.state = 'playing';
 });
   
 // Toggle debug mode

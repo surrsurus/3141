@@ -143,7 +143,7 @@ class Player {
   addDirection(dir) {
 
     // Don't move if on title screen
-    if (!eh.keyEvents.startGame) return;
+    if (eh.state === 'paused') return;
 
     if (this.direction.length > 1) return;
 
