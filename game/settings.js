@@ -23,6 +23,7 @@ const mapHeight = 51;
 // Tile dimensions in pixels
 const tileWidth = 80;
 const tileHeight = 40;
+const tileDepth = 10;
 
 module.exports = {
     canvasWidth,
@@ -38,5 +39,6 @@ module.exports = {
     mapWidth,
 
     tileWidth,
-    tileHeight
+    tileHeight,
+    tileDepth
 };

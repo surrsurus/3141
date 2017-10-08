@@ -92,6 +92,108 @@ class Player {
   }
 
   /**
+   * PRIVATE
+   */
+
+  /**
+   * @desc Render a shadow beneath the player, assumes this is drawn before player
+   * @method
+   * 
+   * @param {Object} ctx - Canvas context
+   * @param {Object} camera - Camera object
+   * @param {Number} xr - x-radius length
+   * @param {Number} yr - y-radius length
+   */
+  __renderShadow(ctx, camera, xr, yr) {
+
+    ctx.save();
+
+    // Move camera into position
+    ctx.translate(camera.offsetX, camera.offsetY);
+
+    // Start tracing an ellipse
+    ctx.beginPath();
+    // Add values to x and y to center the shadow under the player sprite
+    // WARN: If the player sprite changes, this may need to be changed
+    ctx.ellipse(this.x+16, this.y+30, xr, yr, Math.PI/180, 0, 2 * Math.PI);
+
+    ctx.restore();
+
+    // Fill outside of shadow with a lighter shade of black to simulate
+    // the shadow fading
+    ctx.fillStyle = '#222222';
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#333333';
+    ctx.stroke();
+
+    ctx.restore();
+
+  }
+
+  /**
+   * PUBLIC
+   */
+
+    /**
+   * @desc Add a direction to a player, typically based on what key is being pressed
+   * @param {String} dir - String that represents a direction
+   */
+  addDirection(dir) {
+
+    if (this.direction.length > 1) return;
+
+    if (this.direction.indexOf(dir) === -1) {
+      this.direction.push(dir);
+    }
+
+    this.moving = true;
+    this.idleDirection = dir;
+  }
+
+  /**
+   * @desc Make the player move faster by modifying their speed scale
+   * @method
+   */
+  addSprint() {
+    this.sprint = 2;
+  }
+
+  /**
+   * @desc Retrn the player's boundary box
+   * The changes to the top, right, bottom, and left seem pretty arbitrary
+   * They are, but they help make the boundary box more accurate and feel better
+   * @method
+   * 
+   * @return {Object} - Returns the player's hitbox/footprint
+   */
+  getBB() {
+    return {
+      top: this.y + this.height - 4,
+      right: this.x + this.width - 10,
+      bottom: this.y + this.height,
+      left: this.x + 16,
+    };
+  }
+
+  /**
+   * @desc Remove a direction, typically based on what key is being released
+   * @param {String} dir - String that represents a direction
+   */
+  removeDirection(dir) {
+    this.direction = this.direction.filter(d => d !== dir);
+    this.moving = this.direction.length > 0;
+  } 
+
+  /**
+   * @desc Return the player's speed to normal
+   * @method
+   */
+  removeSprint() {
+    this.sprint = 1;
+  }
+
+  /**
    * @desc Render player to the screen depending on whether they are moving or idle as well as determining which sprite or sprite set to render
    * @method
    * 
@@ -108,9 +210,9 @@ class Player {
     // Don't render shadow if debug mode is enabled since it interferes with the render of the boundary box
     if (!global.debug) {
       if (this.moving) {
-        this.renderShadow(ctx, camera, 6, 2);
+        this.__renderShadow(ctx, camera, 6, 2);
       } else {
-        this.renderShadow(ctx, camera, 5, 2);
+        this.__renderShadow(ctx, camera, 5, 2);
       }
     }
 
@@ -210,42 +312,6 @@ class Player {
   }
 
   /**
-   * @desc Render a shadow beneath the player, assumes this is drawn before player
-   * @method
-   * 
-   * @param {Object} ctx - Canvas context
-   * @param {Object} camera - Camera object
-   * @param {Number} xr - x-radius length
-   * @param {Number} yr - y-radius length
-   */
-  renderShadow(ctx, camera, xr, yr) {
-
-    ctx.save();
-
-    // Move camera into position
-    ctx.translate(camera.offsetX, camera.offsetY);
-
-    // Start tracing an ellipse
-    ctx.beginPath();
-    // Add values to x and y to center the shadow under the player sprite
-    // WARN: If the player sprite changes, this may need to be changed
-    ctx.ellipse(this.x+16, this.y+30, xr, yr, Math.PI/180, 0, 2 * Math.PI);
-
-    ctx.restore();
-
-    // Fill outside of shadow with a lighter shade of black to simulate
-    // the shadow fading
-    ctx.fillStyle = '#222222';
-    ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = '#333333';
-    ctx.stroke();
-
-    ctx.restore();
-
-  }
-
-  /**
    * @desc Update the player's speed, direction, and prevent them from going oob
    * @method
    * 
@@ -298,62 +364,6 @@ class Player {
     }
 
   }
-
-  /**
-   * @desc Retrn the player's boundary box
-   * @method
-   * 
-   * @return {Object} - Returns the player's hitbox/footprint
-   */
-  getBB() {
-    return {
-      top: this.y + this.height - 4,
-      right: this.x + this.width - 10,
-      bottom: this.y + this.height,
-      left: this.x + 16,
-    };
-  }
-
-  /**
-   * @desc Make the player move faster by modifying their speed scale
-   * @method
-   */
-  addSprint() {
-    this.sprint = 2;
-  }
-
-  /**
-   * @desc Return the player's speed to normal
-   * @method
-   */
-  removeSprint() {
-    this.sprint = 1;
-  }
-
-  /**
-   * @desc Add a direction to a player, typically based on what key is being pressed
-   * @param {String} dir - String that represents a direction
-   */
-  addDirection(dir) {
-
-    if (this.direction.length > 1) return;
-
-    if (this.direction.indexOf(dir) === -1) {
-      this.direction.push(dir);
-    }
-
-    this.moving = true;
-    this.idleDirection = dir;
-  }
-
-  /**
-   * @desc Remove a direction, typically based on what key is being released
-   * @param {String} dir - String that represents a direction
-   */
-  removeDirection(dir) {
-    this.direction = this.direction.filter(d => d !== dir);
-    this.moving = this.direction.length > 0;
-  } 
 
 }
 

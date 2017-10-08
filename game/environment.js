@@ -77,13 +77,12 @@ class Environment {
   
     // This code is basically outlining a polygon, then filling it
     // Each lineTo represents a side of the polygon
-    // the + 10s represents how far down the polygon goes vertically
     ctx.beginPath();
     ctx.moveTo(isoX, isoY);                                           
     ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2);     
-    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2 + 10);
-    ctx.lineTo(isoX, isoY + S.tileHeight + 10); 
-    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2 + 10);
+    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2 + S.tileDepth);
+    ctx.lineTo(isoX, isoY + S.tileHeight + S.tileDepth); 
+    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2 + S.tileDepth);
     ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2);      
     ctx.lineTo(isoX, isoY);                                           
     ctx.fill();
@@ -95,12 +94,12 @@ class Environment {
     // they are all seperate
     ctx.beginPath();
     ctx.moveTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2);
-    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2 + 10);
+    ctx.lineTo(isoX + S.tileWidth / 2, isoY + S.tileHeight / 2 + S.tileDepth);
     ctx.stroke();
 
     ctx.beginPath();
     ctx.moveTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2);
-    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2 + 10);
+    ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2 + S.tileDepth);
     ctx.stroke();
 
     // Step 3: Draw the tops
@@ -363,7 +362,7 @@ class Environment {
   
   /**
    * @desc Update the environment and it's held objects
-   * Clearly does nothing, but thats because the environment has nothing to update as of right now
+   * WARN: Clearly does nothing, but thats because the environment has nothing to update as of right now
    * @method
    */
   update() {}
