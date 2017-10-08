@@ -123,6 +123,10 @@ class GameScreen extends Screen {
     this.camera.update(ctx, player);
     player.update(environment);
 
+    if (player.onStairs(environment)) {
+      eh.keyEvents.regenMap = true;
+    }
+
   }
 
 }

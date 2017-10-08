@@ -26,6 +26,7 @@
     "keyboardjs": "^2.3.4",
     "remote": "^0.2.6",
     "turf": "^3.0.14",
+    "turf-inside": "^3.0.12",
     "turf-overlaps": "^1.0.3",
     "underscore": "^1.8.3"
   }

@@ -180,6 +180,17 @@ class Player {
     };
   }
 
+  onStairs(environment) {
+
+    for (let box of environment.stairBounds) {
+      if (environment.isInside(this.getBB(), box)) return true;
+    }
+
+    return false;
+ 
+  }
+  
+
   /**
    * @desc Remove a direction, typically based on what key is being released
    * @param {String} dir - String that represents a direction

@@ -191,6 +191,17 @@ const Dungeon = function Dungeon() {
 
     _removeDeadEnds();
 
+    // Randomly place a stair
+    let tile = _tiles[0][0];
+    let x;
+    let y;
+    do {
+      x = Math.floor(Math.random()*_tiles.length);
+      y = Math.floor(Math.random()*_tiles.length);
+      tile = _tiles[x][y];
+    } while (tile.type === 'wall');
+    _tiles[x][y].type = 'stairs';
+
     let endDate = Date.now();
 
     console.log('Dungeon generated in ' + (endDate - startDate) + 'ms');

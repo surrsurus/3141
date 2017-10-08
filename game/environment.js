@@ -8,6 +8,7 @@ const U = require('./utils.js');
 const S = require('./settings');
 const turf = require('turf');
 const overlaps = require('turf-overlaps');
+const inside = require('turf-inside');
 const _ = require('underscore');
 
 /**
@@ -27,6 +28,7 @@ class Environment {
     this.dungeon;
     
     this.bounds = [];
+    this.stairBounds = [];
 
     this.genDungeon();
 
@@ -46,7 +48,8 @@ class Environment {
    * @param {*} height - Height of object
    * @param {*} ctx - Canvas context
    */
-  __drawBounds(x, y, width, height, ctx) {
+  __drawBounds(x, y, width, height, ctx, color = '#ff0000') {
+    ctx.strokeStyle = color;
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x + width / 2, y + height / 2);
@@ -133,49 +136,6 @@ class Environment {
   }
 
   /**
-   * @desc Determine if two isometric rectangles are intersecting
-   * @method
-   * 
-   * @param {Object} r1 - Iso rectangle 1
-   * @param {Object} r2 - Iso rectangle 2
-   * @return {Boolean} True if they are overlapping, false if not
-   */
-  __intersectIsometric(r1, r2) {
-    // Check outer bounding box first
-    if (!this.__intersectRect(r1, r2)) {
-      return false;
-    }
-  
-    let r1w = r1.right - r1.left;
-    let r1h = r1.bottom - r1.top;
-  
-    let r2w = r2.right - r2.left;
-    let r2h = r2.bottom - r2.top;
-  
-    // Create a polygon representing the first rectangle
-    // Each array is a tuple of points, that you can think of the polygon object connecting the dots to
-    // to form a polygon
-    let poly1 = turf.polygon([[
-      [r1.left, r1.top],
-      [r1.left + r1w / 2, r1.top + r1h / 2],
-      [r1.left, r1.top + r1h],
-      [r1.left - r1w / 2, r1.top + r1h / 2],
-      [r1.left, r1.top]
-    ]]);
-  
-    let poly2 = turf.polygon([[
-      [r2.left, r2.top],
-      [r2.left + r2w / 2, r2.top + r2h / 2],
-      [r2.left, r2.top + r2h],
-      [r2.left - r2w / 2, r2.top + r2h / 2],
-      [r2.left, r2.top]
-    ]]);
-  
-    return overlaps(poly1, poly2);
-
-  }
-
-  /**
    * @desc Determines if two rectangles are overlapping
    * @method
    * 
@@ -223,15 +183,30 @@ class Environment {
 
     // Clear bounds
     this.bounds = [];
+    this.stairBounds = [];
     
     // Purposefully trigger exceptions by accessing oob elements
-    for (let tile of this.__dungeonIter(-1, this.dungeon.tiles.length + 1)) {
+    for (let tile of this.__dungeonIter(-2, this.dungeon.tiles.length + 1)) {
 
       try {
         
         // Walls recieve boundaries
         if (tile.data.type === 'wall') {
           this.__pushBounds(tile.x, tile.y);
+        }
+
+        else if (tile.data.type === 'stairs') {
+          let cartX = tile.x * S.tileWidth / 2;
+          let cartY = tile.y * S.tileHeight;
+          let isoX = cartX - cartY;
+          let isoY = (cartX + cartY) / 2;
+      
+          this.stairBounds.push({
+            top: isoY,
+            left: isoX,
+            right: isoX + S.tileWidth,
+            bottom: isoY + S.tileHeight
+          });
         }
         
       }
@@ -295,9 +270,78 @@ class Environment {
   
     this.__setBounds();
 
+
   }
 
-    /**
+  /**
+   * @desc Determine if two isometric rectangles are intersecting
+   * @method
+   * 
+   * @param {Object} r1 - Iso rectangle 1
+   * @param {Object} r2 - Iso rectangle 2
+   * @return {Boolean} True if they are overlapping, false if not
+   */
+  intersectIsometric(r1, r2) {
+    // Check outer bounding box first
+    if (!this.__intersectRect(r1, r2)) {
+      return false;
+    }
+  
+    let r1w = r1.right - r1.left;
+    let r1h = r1.bottom - r1.top;
+  
+    let r2w = r2.right - r2.left;
+    let r2h = r2.bottom - r2.top;
+  
+    // Create a polygon representing the first rectangle
+    // Each array is a tuple of points, that you can think of the polygon object connecting the dots to
+    // to form a polygon
+    let poly1 = turf.polygon([[
+      [r1.left, r1.top],
+      [r1.left + r1w / 2, r1.top + r1h / 2],
+      [r1.left, r1.top + r1h],
+      [r1.left - r1w / 2, r1.top + r1h / 2],
+      [r1.left, r1.top]
+    ]]);
+  
+    let poly2 = turf.polygon([[
+      [r2.left, r2.top],
+      [r2.left + r2w / 2, r2.top + r2h / 2],
+      [r2.left, r2.top + r2h],
+      [r2.left - r2w / 2, r2.top + r2h / 2],
+      [r2.left, r2.top]
+    ]]);
+  
+    return overlaps(poly1, poly2);
+
+  }
+
+  /**
+   * @desc Determines if r1 is inside r2
+   * @param {Object} r1 - Thing you want on inside
+   * @param {Object} r2 - Thing you want on outside
+   */
+  isInside(r1, r2) {
+
+    let pt1 = turf.point([r1.left, r1.top]);
+
+
+    let r2w = r2.right - r2.left;
+    let r2h = r2.bottom - r2.top;
+  
+    let poly2 = turf.polygon([[
+      [r2.left, r2.top],
+      [r2.left + r2w / 2, r2.top + r2h / 2],
+      [r2.left, r2.top + r2h],
+      [r2.left - r2w / 2, r2.top + r2h / 2],
+      [r2.left, r2.top]
+    ]]);
+
+    return inside(pt1, poly2);
+
+  }
+
+  /**
    * @desc Compare boundary boxes to determine if an entity moves out of bounds
    * @method
    * 
@@ -308,7 +352,7 @@ class Environment {
 
     // Basically just see if the bounding box overlaps any others
     for (let bound in this.bounds) {
-      if (this.__intersectIsometric(boundingBox, this.bounds[bound])) {
+      if (this.intersectIsometric(boundingBox, this.bounds[bound])) {
         return true;
       }
     }
@@ -329,20 +373,26 @@ class Environment {
     for (let tile of this.__dungeonIter()) {
       // Draw floor tiles as white tiles
       if (tile.data.type === 'floor')
-      this.__drawTile(tile.x, tile.y, ctx);
+        this.__drawTile(tile.x, tile.y, ctx);
+
+      else if (tile.data.type === 'stairs')
+        this.__drawTile(tile.x, tile.y, ctx, '#aaffaa', '#00ff00');
 
       // Draw door tiles as red tiles
       else if (tile.data.type === 'door')
-      this.__drawTile(tile.x, tile.y, ctx, '#ffaaaa', '#ff0000');
+        this.__drawTile(tile.x, tile.y, ctx, '#ffaaaa', '#ff0000');
     }
     
     // Draw the boundaries if debug is on
     if (eh.keyEvents.debug) {
 
-      ctx.strokeStyle = 'red';
 
       this.bounds.forEach((box) => {
         this.__drawBounds(box.left, box.top, box.right - box.left, box.bottom - box.top, ctx);
+      });
+
+      this.stairBounds.forEach((box) => {
+        this.__drawBounds(box.left, box.top, box.right - box.left, box.bottom - box.top, ctx, '#0000ff');
       });
 
     }
