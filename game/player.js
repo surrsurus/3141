@@ -145,14 +145,15 @@ class Player {
     // Don't move if on title screen
     if (eh.state === 'paused') return;
 
-    if (this.direction.length > 1) return;
+    // Dont move if player holds down 3 or more keys 
+    else if (this.direction.length > 1) return;
 
-    if (this.direction.indexOf(dir) === -1) {
+    else if (this.direction.indexOf(dir) === -1) {
       this.direction.push(dir);
+      this.moving = true;
+      this.idleDirection = dir;
     }
-
-    this.moving = true;
-    this.idleDirection = dir;
+    
   }
 
   /**
@@ -212,12 +213,8 @@ class Player {
     // for when the player is moving
 
     // Don't render shadow if debug mode is enabled since it interferes with the render of the boundary box
-    if (!eh.keyEvents.debug) {
-      if (this.moving)
-        this.__renderShadow(ctx, camera, 6, 2);
-      else
-        this.__renderShadow(ctx, camera, 5, 2);
-    }
+    if (!eh.keyEvents.debug)
+      this.moving ? this.__renderShadow(ctx, camera, 6, 2) : this.__renderShadow(ctx, camera, 5, 2);
 
     // Step 2: Determine what direction the player is facing in an iso view
     
@@ -285,6 +282,7 @@ class Player {
         this.width,
         this.height
       );
+      ctx.restore();      
     } else {
       ctx.drawImage(
         this.imgIdle,
@@ -300,7 +298,6 @@ class Player {
       ctx.restore();
       return;
     }
-    ctx.restore();
 
     this.tickCount++;
 
@@ -309,8 +306,10 @@ class Player {
 
     // Cycle through frames
     this.tickCount = 0;
-    this.frame++;
-    if (this.frame >= this.frames[dir].length) this.frame = 0;
+    
+    // Cycle through frames. Add the -1 since we need to evaluate before incrementing
+    // which prevents us from going over the array length
+    this.frame === this.frames[dir].length - 1 ? this.frame = 0 : this.frame++;
 
   }
 
@@ -336,7 +335,7 @@ class Player {
     if (this.direction.includes('up') && this.direction.includes('right')) 
       speed /= 2;
 
-    if (this.direction.includes('down') && this.direction.includes('left'))
+    else if (this.direction.includes('down') && this.direction.includes('left'))
       speed /= 2;
 
     // Divide y axis speed by 2 since that compensates for the difference between
@@ -364,6 +363,7 @@ class Player {
     if (environment.isOutOfBounds(this.getBB())) {
       this.x = origX;
       this.y = origY;
+      this.moving = false;
     }
 
   }

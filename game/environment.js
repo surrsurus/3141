@@ -114,6 +114,7 @@ class Environment {
     ctx.lineTo(isoX - S.tileWidth / 2, isoY + S.tileHeight / 2);
     ctx.lineTo(isoX, isoY);
     ctx.fill();
+
   }
 
   /**
@@ -142,9 +143,7 @@ class Environment {
    */
   __intersectIsometric(r1, r2) {
     // Check outer bounding box first
-    if (!this.__intersectRect(r1, r2)) {
-      return false;
-    }
+    if (!this.__intersectRect(r1, r2))  return false;
   
     let r1w = r1.right - r1.left;
     let r1h = r1.bottom - r1.top;
@@ -185,9 +184,10 @@ class Environment {
    */
   __intersectRect(r1, r2) {
     return (r2.left < r1.right ||
-             r2.right > r1.left ||
-             r2.top < r1.bottom ||
-             r2.bottom > r1.top);
+            r2.right > r1.left ||
+            r2.top < r1.bottom ||
+            r2.bottom > r1.top
+    );
   }
 
   /**
@@ -227,10 +227,8 @@ class Environment {
     for (let tile of this.__dungeonIter()) {
         
       // Walls recieve boundaries
-      if (tile.data.type === 'wall') {
-        this.__pushBounds(tile.x, tile.y);
-      }
-        
+      if (tile.data.type === 'wall') this.__pushBounds(tile.x, tile.y);
+
     }
 
     // Add a 'ring' around the edge of the map
@@ -304,9 +302,7 @@ class Environment {
 
     // Basically just see if the bounding box overlaps any others
     for (let bound in this.bounds) {
-      if (this.__intersectIsometric(boundingBox, this.bounds[bound])) {
-        return true;
-      }
+      if (this.__intersectIsometric(boundingBox, this.bounds[bound])) return true;
     }
   
     return false;
@@ -319,7 +315,7 @@ class Environment {
    * @param {*} camera 
    */
   render(ctx, camera) {
-  
+
     ctx.translate(camera.offsetX, camera.offsetY);
 
     for (let tile of this.__dungeonIter()) {
@@ -346,28 +342,13 @@ class Environment {
     ctx.restore();
 
   }
-
-  /**
-   * @desc Render all objects in the foreground
-   * WARN: Not used
-   * @method
-   * 
-   * @param {Object} ctx - Canvas context
-   * @param {Object} camera - Camera object
-   */
-  renderForeground(ctx, camera) {
-    ctx.save();
-    ctx.translate(camera.offsetX, camera.offsetY);
-    // ctx.drawImage(this.foregroundImg, 0, 0);
-    ctx.restore();
-  }
   
   /**
    * @desc Update the environment and it's held objects
    * WARN: Clearly does nothing, but thats because the environment has nothing to update as of right now
    * @method
    */
-  update() {}
+  update(dt) {}
   
 }
 

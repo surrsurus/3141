@@ -9,10 +9,11 @@
  * @return {Array} - A tuple of new iso coords
  */
 const cart2Iso = (x, y) => {
-  let isoX = x - y;
-  let isoY = (x + y) / 2;
+  // isoX = x - y;
+  // isoY = (x + y) / 2;
 
-  return [isoX, isoY];
+  return [x - y, (x + y) / 2];
+  
 };
 
 /**
@@ -25,10 +26,11 @@ const cart2Iso = (x, y) => {
  * @return {Array} - A tuple of new cartesian coords
  */
 const iso2Cart = (isoX, isoY) => {
-  let cartX = (2 * isoY + isoX) / 2;
-  let cartY = (2 * isoY - isoX) / 2;
+  // cartX = (2 * isoY + isoX) / 2;
+  // cartY = (2 * isoY - isoX) / 2;
 
-  return [cartX, cartY];
+  return [(2 * isoY + isoX) / 2, (2 * isoY - isoX) / 2];
+
 };
 
 /**
