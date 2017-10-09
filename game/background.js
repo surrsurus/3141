@@ -58,23 +58,19 @@ class Background {
     // Set the top of the gradient to black
     grd.addColorStop(0,"black");
 
-    // Add the color to the bottom of the gradient for specific category
-    grd.addColorStop(1, this.bg_array[this.bg_shade]);
-    
-    // Increment/decrement color. This creates the pulsing effect
+    // Update color
     if (this.tick_count === 2) {
       this.tick_count = 0;
-      
-      // Check to see if we need to change what direction the color is moving
-      if (this.bg_shade === this.bg_array.length) this.bg_shade = 0;
-
+      // Check to see if we need to loop back
+      this.bg_shade === this.bg_array.length - 1 ? this.bg_shade = 0 : this.bg_shade++;
     }
+
+    // Add the color to the bottom of the gradient for specific category
+    grd.addColorStop(1, this.bg_array[this.bg_shade]);
     
     // Finally, draw gradient to the canvas
     ctx.fillStyle=grd;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-    this.bg_shade++;
   
     ctx.save();
 
