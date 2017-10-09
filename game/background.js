@@ -15,6 +15,27 @@ class Background {
     // Current color rgb value (0 - 200)
     this.bg_shade = 0;
 
+    // Create an array of colors
+    this.bg_array = []
+
+    for (let i = 0; i < 200; i++)
+      this.bg_array.push('rgb(' + i + ', 0, 0)');
+
+    for (let i = 200; i > 0; i--)
+      this.bg_array.push('rgb(' + i + ', 0, 0)');
+
+    for (let i = 0; i < 200; i++)
+      this.bg_array.push('rgb( 0, ' + i + ', 0)');
+
+    for (let i = 200; i > 0; i--)
+      this.bg_array.push('rgb( 0, ' + i + ', 0)');
+
+    for (let i = 0; i < 200; i++)
+      this.bg_array.push('rgb( 0, 0, ' + i + ' )');
+
+    for (let i = 200; i > 0; i--)
+      this.bg_array.push('rgb( 0, 0, ' + i + ' )');
+
     // Current color category (R, G, or B)
     this.bg_cat = 0;
 
@@ -44,17 +65,7 @@ class Background {
     grd.addColorStop(0,"black");
 
     // Add the color to the bottom of the gradient for specific category
-    switch (this.bg_cat) {
-      case 0:
-      grd.addColorStop(1,'rgb(' + this.bg_shade + ', 0, 0)');
-      break;
-      case 1:
-      grd.addColorStop(1,'rgb(0, ' + this.bg_shade + ', 0)');
-      break;
-      case 2:
-      grd.addColorStop(1,'rgb(0, 0, ' + this.bg_shade + ')');
-      break;
-    }
+    grd.addColorStop(1, this.bg_array[this.bg_shade]);
     
     // Increment/decrement color. This creates the pulsing effect
     if (this.tick_count === 2) {
@@ -62,13 +73,7 @@ class Background {
       this.pulse_up ? this.bg_shade++ : this.bg_shade--; 
       
       // Check to see if we need to change what direction the color is moving
-      if (this.bg_shade === 200) this.pulse_up = false;
-      // Change color category once we fade to black
-      if (this.bg_shade === 0) {
-        this.pulse_up = true;
-        this.bg_cat++;
-        if (this.bg_cat > 2) this.bg_cat = 0;
-      }
+      if (this.bg_shade === this.bg_array.length) this.bg_shade = 0;
 
     }
     

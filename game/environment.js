@@ -124,7 +124,7 @@ class Environment {
    * @param {Number} end - Upper bound of map, assumes map is square, default value is dungeon.tiles.length
    * @yield {Object} Object with tile, x, and y properties
    */
-  * __dungeonIter(start = 0, end = this.dungeon.tiles.length) {
+  * __dungeonIter() {
     for (let x = 0; x < this.dungeon.tiles.length; x++) {
       for (let y = 0; y < this.dungeon.tiles.length; y++) {
         yield { data: this.dungeon.tiles[x][y], x: x, y: y };
@@ -224,25 +224,21 @@ class Environment {
     // Clear bounds
     this.bounds = [];
     
-    // Purposefully trigger exceptions by accessing oob elements
-    for (let tile of this.__dungeonIter(-1, this.dungeon.tiles.length + 1)) {
-
-      try {
+    for (let tile of this.__dungeonIter()) {
         
-        // Walls recieve boundaries
-        if (tile.data.type === 'wall') {
-          this.__pushBounds(tile.x, tile.y);
-        }
-        
-      }
-        
-      // Since index errors are bound to happen, we know that if an index error occurs,
-      // the tile we're looking at doesn't exist on the map, therefore we can draw a boundary around it
-      // to prevent player from leaving the map if a floor tile spawns on the edge
-      catch (e) {
+      // Walls recieve boundaries
+      if (tile.data.type === 'wall') {
         this.__pushBounds(tile.x, tile.y);
       }
+        
+    }
 
+    // Add a 'ring' around the edge of the map
+    for (let i = -1; i < this.dungeon.tiles.length + 1; i++) {
+      this.__pushBounds(-1, i);
+      this.__pushBounds(i, -1);
+      this.__pushBounds(this.dungeon.tiles.length, i);
+      this.__pushBounds(i, this.dungeon.tiles.length);
     }
 
   }
