@@ -75,8 +75,7 @@ class GameScreen extends Screen {
     [player.x, player.y] = environment.findStart();
 
     // Initialize the camera
-    this.camera = new Camera(canvas, 0, 0);
-    this.camera.update(ctx, player);
+    this.camera = new Camera(canvas, ctx, 0, 0);
 
     // Initialize the background
     this.bg = new Background(ctx);
@@ -94,10 +93,9 @@ class GameScreen extends Screen {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // Render the background, the player, then the foreground
-    this.bg.render(ctx, this.camera);
+    this.bg.render(ctx);
     environment.render(ctx, this.camera);
     player.render(ctx, this.camera);
-    environment.renderForeground(ctx, this.camera);
     
   }
 
@@ -119,8 +117,8 @@ class GameScreen extends Screen {
 
     // Update all game objects
     this.bg.update(dt);
-    environment.update(dt);
     this.camera.update(ctx, player);
+    // environment.update(dt);
     player.update(environment);
 
     if (player.onStairs(environment)) {

@@ -17,8 +17,6 @@ class Camera {
 	constructor(canvas, startX, startY) {
 		this.offsetX = startX - canvas.width / S.cameraOffset;
 		this.offsetY = startY - canvas.height / S.cameraOffset;
-		this.width = canvas.width;
-		this.height = canvas.height;
 	}
 
 	/**
