@@ -63,3 +63,7 @@ keyboard.bind('r', (e) => {
     eh.keyEvents.regenMap = !eh.keyEvents.regenMap;
 });
   
+// Toggle BG
+keyboard.bind('t', (e) => {
+  eh.keyEvents.background = !eh.keyEvents.background;
+});

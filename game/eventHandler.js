@@ -2,17 +2,17 @@
  * Hold the state of events
  */
 const EventHandler = {
-  state: 'paused',
+  state: 'null',
   /**
    * Hold events triggered by keypresses
    */
   keyEvents: {
-    // Start game from titlescreen
-    gamePaused: true,
     // Regenerate map
     regenMap: false,
     // Toggle debug
     debug: false,
+    // Toggle BG
+    background: false
   }
 };
 

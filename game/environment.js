@@ -363,6 +363,8 @@ class Environment {
    */
   render(ctx, camera) {
 
+    ctx.save();
+
     ctx.translate(camera.offsetX, camera.offsetY);
 
     for (let tile of this.dungeonIter()) {

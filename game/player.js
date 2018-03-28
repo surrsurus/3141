@@ -377,6 +377,15 @@ class Player {
       this.moving = false;
     }
 
+    // TEST
+    // see where player is in terms of map tiles
+    // let cartX = this.x * this.width / 2;
+    // let cartY = this.y * this.height;
+    // let isoX = cartX - cartY;
+    // let isoY = (cartX + cartY) / 2;
+
+    // console.log('(' + Math.floor(isoX) + ')');
+
   }
 
 }

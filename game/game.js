@@ -97,7 +97,7 @@ class GameScreen extends Screen {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // Render the background, the player, then the foreground
-    this.bg.render(ctx);
+    if (eh.keyEvents.background) this.bg.render(ctx);
     environment.render(ctx, this.camera);
     player.render(ctx, this.camera);
     this.minimap.render(ctx, environment);
@@ -122,7 +122,7 @@ class GameScreen extends Screen {
     }
 
     // Update all game objects
-    this.bg.update(dt);
+    if (eh.keyEvents.background) this.bg.update(dt);
     this.camera.update(ctx, player);
     this.minimap.update(dt);
     // environment.update(dt);
@@ -150,6 +150,8 @@ class TitleScreen extends Screen {
 
     // Call Screen constructor
     super();
+
+    eh.state = 'paused';
 
     // Create an image object
     this.title = new Image();
@@ -195,17 +197,23 @@ class TitleScreen extends Screen {
 }
 
 /**
- * Establish the current screen object for this file.
- * Should be accessible by each Screen subclass since we should only be using them after
- * the declaration of this variable
- */
-let currentScreen = new TitleScreen();
-
-/**
  * Instantiate a game screen object to generate an environment so switching ownership to it
  * is faster
  */
 let gameScreen = new GameScreen();
+
+/**
+ * Establish the current screen object for this file.
+ * Should be accessible by each Screen subclass since we should only be using them after
+ * the declaration of this variable
+ */
+let currentScreen = undefined;
+if (S.debug) {
+  currentScreen = gameScreen;
+} else {
+  currentScreen = new TitleScreen();
+}
+
 
 /**
   * @desc Main function that auto-executes and makes the game object render and update animations in a loop

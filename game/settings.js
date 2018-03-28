@@ -1,3 +1,6 @@
+// Mode
+const debug = true;
+
 // Screen size
 const screenWidth = 965;
 const screenHeight = 590;
@@ -32,6 +35,11 @@ const tileHeight = 40;
 const tileDepth = 10;
 
 module.exports = {
+    debug,
+
+    screenWidth,
+    screenHeight,
+    
     canvasWidth,
     canvasHeight,
 
