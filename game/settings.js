@@ -1,6 +1,12 @@
+// Screen size
+const screenWidth = 965;
+const screenHeight = 590;
+
 // Canvas dimensions
 const canvasWidth = 480;
 const canvasHeight = 270;
+
+if (canvasWidth > screenWidth || canvasHeight > screenHeight ) throw Exception('Canvas is larger than screen');
 
 // The factor by which the canvas size is increased
 const canvasMagnification = 2;

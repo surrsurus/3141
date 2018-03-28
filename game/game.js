@@ -13,6 +13,7 @@ const eh = require('./eventHandler');
 const S = require('./settings');
 const Camera = require('./camera');
 const Background = require('./background');
+const Minimap = require('./minimap');
 
 // Canvas
 const canvas = document.querySelector('canvas');
@@ -80,6 +81,9 @@ class GameScreen extends Screen {
     // Initialize the background
     this.bg = new Background(ctx);
 
+    // Create minimap
+    this.minimap = new Minimap(environment);
+
   }
 
   /**
@@ -96,6 +100,7 @@ class GameScreen extends Screen {
     this.bg.render(ctx);
     environment.render(ctx, this.camera);
     player.render(ctx, this.camera);
+    this.minimap.render(ctx, environment);
     
   }
 
@@ -113,11 +118,13 @@ class GameScreen extends Screen {
       environment.genDungeon();
       [player.x, player.y] = environment.findStart();
       this.camera = new Camera(canvas, 0, 0);
+      this.minimap = new Minimap(environment);
     }
 
     // Update all game objects
     this.bg.update(dt);
     this.camera.update(ctx, player);
+    this.minimap.update(dt);
     // environment.update(dt);
     player.update(environment);
 

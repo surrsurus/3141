@@ -121,22 +121,6 @@ class Environment {
   }
 
   /**
-   * @desc Generator method to iterate over the dungeon tiles
-   * @generator
-   * 
-   * @param {Number} start - Lower bound of map, assumes map is square, default value is 0
-   * @param {Number} end - Upper bound of map, assumes map is square, default value is dungeon.tiles.length
-   * @yield {Object} Object with tile, x, and y properties
-   */
-  * __dungeonIter() {
-    for (let x = 0; x < this.dungeon.tiles.length; x++) {
-      for (let y = 0; y < this.dungeon.tiles.length; y++) {
-        yield { data: this.dungeon.tiles[x][y], x: x, y: y };
-      }
-    }
-  }
-
-  /**
    * @desc Determines if two rectangles are overlapping
    * @method
    * 
@@ -187,7 +171,7 @@ class Environment {
     this.bounds = [];
     this.stairBounds = [];
     
-    for (let tile of this.__dungeonIter()) {
+    for (let tile of this.dungeonIter()) {
         
       // Walls recieve boundaries
       if (tile.data.type === 'wall') this.__pushBounds(tile.x, tile.y);
@@ -223,6 +207,22 @@ class Environment {
    */
 
   /**
+   * @desc Generator method to iterate over the dungeon tiles
+   * @generator
+   * 
+   * @param {Number} start - Lower bound of map, assumes map is square, default value is 0
+   * @param {Number} end - Upper bound of map, assumes map is square, default value is dungeon.tiles.length
+   * @yield {Object} Object with tile, x, and y properties
+   */
+  * dungeonIter() {
+    for (let x = 0; x < this.dungeon.tiles.length; x++) {
+      for (let y = 0; y < this.dungeon.tiles.length; y++) {
+        yield { data: this.dungeon.tiles[x][y], x: x, y: y };
+      }
+    }
+  }
+
+  /**
    * @desc Find the start of the map, usually the top-left most tile 
    * Good for setting the player location
    * TODO: Probably just want to make a function that gets a random tile instead
@@ -234,7 +234,7 @@ class Environment {
     let startX;
     let startY;
 
-    for (let tile of this.__dungeonIter()) {
+    for (let tile of this.dungeonIter()) {
 
       if (tile.data.type !== 'wall') {
 
@@ -365,7 +365,7 @@ class Environment {
 
     ctx.translate(camera.offsetX, camera.offsetY);
 
-    for (let tile of this.__dungeonIter()) {
+    for (let tile of this.dungeonIter()) {
       // Draw floor tiles as white tiles
       if (tile.data.type === 'floor')
         this.__drawTile(tile.x, tile.y, ctx);
