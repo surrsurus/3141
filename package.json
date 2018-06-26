@@ -18,7 +18,7 @@
   "author": "surrsurus",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^1.4.1"
+    "electron": "^1.8.7"
   },
   "dependencies": {
     "electron-json-storage": "^2.1.0",
