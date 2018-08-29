@@ -14,6 +14,7 @@ const S = require('./settings');
 const Camera = require('./camera');
 const Background = require('./background');
 const Minimap = require('./minimap');
+const Timer = require('./timer');
 
 // Canvas
 const canvas = document.querySelector('canvas');
@@ -84,6 +85,12 @@ class GameScreen extends Screen {
     // Create minimap
     this.minimap = new Minimap(environment);
 
+    // Create timer
+    this.timer = new Timer();
+
+    // Save score
+    this.score = 0;
+
   }
 
   /**
@@ -101,6 +108,7 @@ class GameScreen extends Screen {
     environment.render(ctx, this.camera);
     player.render(ctx, this.camera);
     this.minimap.render(ctx, environment);
+    this.timer.render(ctx);
     
   }
 
@@ -125,11 +133,22 @@ class GameScreen extends Screen {
     if (eh.keyEvents.background) this.bg.update(dt);
     this.camera.update(ctx, player);
     this.minimap.update(dt);
+    this.timer.update(dt);
     // environment.update(dt);
     player.update(environment);
 
+    // Next map
     if (player.onStairs(environment)) {
+      this.score += 1;
       eh.keyEvents.regenMap = true;
+    }
+
+    // Game end
+    if (eh.state === 'timer end') {
+      // Transfer ownership to a game screen
+      let scoreScreen = new ScoreScreen(this.score);
+      currentScreen = scoreScreen;
+      currentScreen.update(dt);
     }
 
   }
@@ -187,6 +206,71 @@ class TitleScreen extends Screen {
       // If you have errors relating to TitleScreen.update(), this may be it.
 
       // Transfer ownership to a game screen
+      let gameScreen = new GameScreen();
+      currentScreen = gameScreen;
+      currentScreen.update(dt);
+
+    }
+
+  }
+
+}
+
+/**
+ * @desc Display the score page
+ * @class
+ */
+class ScoreScreen extends Screen {
+
+  /**
+   * @desc Initialize the title screen image
+   * @constructor
+   */
+  constructor(score) {
+
+    // Call Screen constructor
+    super();
+
+    this.score = score;
+
+    eh.state = 'gameover';
+
+  }
+
+  /**
+   * @desc Render the title screen image
+   * @method
+   */
+  render() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.fillStyle = 'rgb(255, 255, 255)';
+    ctx.font = '16px Arial';
+    ctx.fillText(this.score * 1000, 360, 36);
+    ctx.save();
+  }
+
+  /**
+   * @desc Check for event to transition to game screen
+   * @method
+   * 
+   * @param {Number} dt - Datetime
+   */
+  update(dt) {
+
+    // Check for new game event
+    if (eh.state !== 'gameover') {
+
+      // Clear screen
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.save();
+
+      // Valid since declaration happens before this gets a chance to run
+      // If you have errors relating to TitleScreen.update(), this may be it.
+
+      // Transfer ownership to a game screen
+      let gameScreen = new GameScreen();
       currentScreen = gameScreen;
       currentScreen.update(dt);
 
@@ -200,7 +284,8 @@ class TitleScreen extends Screen {
  * Instantiate a game screen object to generate an environment so switching ownership to it
  * is faster
  */
-let gameScreen = new GameScreen();
+// Can't do this here because of timer
+// let gameScreen = new GameScreen();
 
 /**
  * Establish the current screen object for this file.
@@ -208,12 +293,13 @@ let gameScreen = new GameScreen();
  * the declaration of this variable
  */
 let currentScreen = undefined;
-if (S.debug) {
-  currentScreen = gameScreen;
-} else {
-  currentScreen = new TitleScreen();
-}
+// if (S.debug) {
+//   currentScreen = gameScreen;
+// } else {
+//   currentScreen = new TitleScreen();
+// }
 
+currentScreen = new TitleScreen();
 
 /**
   * @desc Main function that auto-executes and makes the game object render and update animations in a loop

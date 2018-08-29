@@ -21,7 +21,7 @@
     "electron": "^1.8.7"
   },
   "dependencies": {
-    "electron-json-storage": "^2.1.0",
+    "electron-json-storage": "^4.1.0",
     "electron-reload": "^1.0.3",
     "keyboardjs": "^2.3.4",
     "remote": "^0.2.6",

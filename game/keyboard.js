@@ -42,11 +42,11 @@ keyboard.bind(['d', 'right'], (e) => {
 });
 
 // Sprint
-keyboard.bind('shift', (e) => {
-    player.addSprint();
-}, (e) => {
-    player.removeSprint();
-});
+// keyboard.bind('shift', (e) => {
+//     player.addSprint();
+// }, (e) => {
+//     player.removeSprint();
+// });
 
 // Start game
 keyboard.bind('enter', (e) => {
@@ -64,6 +64,6 @@ keyboard.bind('r', (e) => {
 });
   
 // Toggle BG
-keyboard.bind('t', (e) => {
-  eh.keyEvents.background = !eh.keyEvents.background;
-});
+// keyboard.bind('t', (e) => {
+//   eh.keyEvents.background = !eh.keyEvents.background;
+// });

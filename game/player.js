@@ -14,7 +14,7 @@ class Player {
   constructor() {
     this.loaded = false;
     this.speed = 2;
-    this.sprint = 1;
+    this.sprint = 2;
     this.imgMoving = S.playerImageMoving;
     this.imgIdle = S.playerImageIdle;
     this.width = 32;
