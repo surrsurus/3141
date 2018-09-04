@@ -50,7 +50,9 @@ keyboard.bind(['d', 'right'], (e) => {
 
 // Start game
 keyboard.bind('enter', (e) => {
+  if (eh.state !== 'gameover') {
     eh.state = 'playing';
+  }
 });
   
 // Toggle debug mode

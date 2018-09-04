@@ -2,9 +2,19 @@ html,
 body {
   background: black;
   margin: 0;
+  font-family: "Arial";
+  color: white;
+}
+
+p {
+  
 }
 
 canvas {
   display: block;
   image-rendering: pixelated;
+}
+
+#score-page {
+  padding: 25px;
 }

@@ -120,6 +120,12 @@ class GameScreen extends Screen {
    */
   update(dt) {
 
+    // New game
+    if (eh.keyEvents.newGame) {
+      eh.keyEvents.regenMap = true;
+      this.score = 0;
+    }
+
     // DEBUG: Regenerate the map
     if (eh.keyEvents.regenMap) {
       eh.keyEvents.regenMap = false;
@@ -235,23 +241,29 @@ class ScoreScreen extends Screen {
 
     eh.state = 'gameover';
 
+    document.getElementById("canvas-wrapper").innerHTML = "\
+    <div id=\"score-page\"> \
+      <center>\
+      <h2>Your Score: " + score + " </h2> \
+        <p>Name: <input id=\"textbox\" type=\"text\"></p> \
+        <button onclick=\"sendScore(" + score + ", document.getElementById('textbox').value)\">Submit & Quit</button> \
+      </form> \
+      </center> \
+    </div>";
+
+    // Delegates handling to html that then submits score and quits the game
+
   }
 
   /**
-   * @desc Render the title screen image
+   * @desc Render the score screen image
    * @method
    */
   render() {
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.fillStyle = 'rgb(255, 255, 255)';
-    ctx.font = '16px Arial';
-    ctx.fillText('Your score: ' + (this.score * 1000, 360, 36).toString());
-    ctx.save();
   }
 
   /**
-   * @desc Check for event to transition to game screen
+   * @desc Check for event to transition
    * @method
    * 
    * @param {Number} dt - Datetime
@@ -259,22 +271,22 @@ class ScoreScreen extends Screen {
   update(dt) {
 
     // Check for new game event
-    if (eh.state !== 'gameover') {
+    // if (eh.state !== 'gameover') {
 
-      // Clear screen
-      ctx.fillStyle = 'black';
-      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      ctx.save();
+    //   // Clear screen
+    //   ctx.fillStyle = 'black';
+    //   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //   ctx.save();
 
-      // Valid since declaration happens before this gets a chance to run
-      // If you have errors relating to TitleScreen.update(), this may be it.
+    //   // Valid since declaration happens before this gets a chance to run
+    //   // If you have errors relating to TitleScreen.update(), this may be it.
 
-      // Transfer ownership to a game screen
-      let gameScreen = new GameScreen();
-      currentScreen = gameScreen;
-      currentScreen.update(dt);
+    //   // Transfer ownership to a game screen
+    //   let gameScreen = new GameScreen();
+    //   currentScreen = gameScreen;
+    //   currentScreen.update(dt);
 
-    }
+    // }
 
   }
 
@@ -299,7 +311,10 @@ let currentScreen = undefined;
 //   currentScreen = new TitleScreen();
 // }
 
-currentScreen = new TitleScreen();
+if (eh.state !== 'gameover') {
+  currentScreen = new TitleScreen();
+}
+
 
 /**
   * @desc Main function that auto-executes and makes the game object render and update animations in a loop
@@ -337,6 +352,10 @@ const main = ( () => {
     currentScreen.render();
 
     lastTime = now;
+
+    if (eh.state === 'gameover') {
+      return 0;
+    }
 
     // Update animation
     requestAnimationFrame(tick);

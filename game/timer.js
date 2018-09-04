@@ -5,7 +5,7 @@ const timerBuffer = 25;
 const timerTransparency = 0.9;
 const timerScale = 1;
 
-const timerMinutes = 5;
+const timerMinutes = 3;
 
 /**
  * @desc Timer class handles generating and rendering a timer

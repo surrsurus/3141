@@ -9,6 +9,8 @@ const EventHandler = {
   keyEvents: {
     // Regenerate map
     regenMap: false,
+    // new game
+    newGame: false,
     // Toggle debug
     debug: false,
     // Toggle BG

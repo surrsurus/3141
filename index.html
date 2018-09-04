@@ -1,14 +1,50 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Roguelike</title>
-    <link rel="stylesheet" href="./css/style.css" />
-  </head>
+<head>
+  <title>3141</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
 
-  <body>
-    <script src="./game/onload.js"></script>
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
+  <!--<script src="./game/onload.js"></script>-->
+  <script>
+    // Send score to server
+    function sendScore(score, name) {
+      
+      // Thats right. This is actually node js
+      const remote = require('electron').remote;
+
+      URL = "localost:8080/store?score=" + score + "&name=" + name;
+
+      console.log(score + ", " + name);
+
+      $.ajax({
+        type: "GET",
+        url: URL,
+        dataType: "html",
+        
+        // Quit on success or failure
+        success: function (response) {
+          console.log("Success: " + response);
+          remote.getCurrentWindow().close();
+        },
+        // Ajax errors should be caught.
+        error: function (jgXHR, textStatus, errorThrown) {
+          console.log("Error during AJAX call; " + errorThrown);
+          remote.getCurrentWindow().close();
+        }
+      });
+
+      
+
+    }
+  </script>
+
+  <div id="canvas-wrapper">
     <canvas></canvas>
-    <script>require('./game/game.js')</script>
-  </body>
+  </div>
+  <script>require('./game/game.js')</script>
+
+</body>
+
 </html>
