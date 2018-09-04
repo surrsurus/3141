@@ -246,7 +246,7 @@ class ScoreScreen extends Screen {
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.fillStyle = 'rgb(255, 255, 255)';
     ctx.font = '16px Arial';
-    ctx.fillText(this.score * 1000, 360, 36);
+    ctx.fillText('Your score: ' + (this.score * 1000, 360, 36).toString());
     ctx.save();
   }
 
